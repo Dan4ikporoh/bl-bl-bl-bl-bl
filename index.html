@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FRIDE RolePlay</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #ff6600;
+            --background-color: #111111;
+            --text-color: #ffffff;
+            --card-bg: rgba(255, 255, 255, 0.05);
+        }
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Montserrat', sans-serif; margin: 0; padding: 0; background-color: var(--background-color); color: var(--text-color); overflow-x: hidden; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+        
+        header { position: fixed; width: 100%; box-sizing: border-box; top: 0; left: 0; display: flex; justify-content: space-between; align-items: center; padding: 20px 40px; background: rgba(0, 0, 0, 0.5); z-index: 1000; transition: background 0.3s ease; }
+        .logo { font-size: 2em; font-weight: 900; text-transform: uppercase; flex-shrink: 0; }
+        
+        nav { position: absolute; left: 50%; transform: translateX(-50%); }
+        nav button, .play-button, .download-button, .modal-buttons button { transition: background-color 0.3s, color 0.3s, transform 0.3s, box-shadow 0.3s; }
+        nav button:hover, .play-button:hover, .download-button:hover, .modal-buttons button:not(.back-button):hover {
+            box-shadow: 0 0 5px var(--primary-color), 0 0 15px var(--primary-color), 0 0 25px var(--primary-color);
+            color: #fff;
+        }
+        .modal-buttons .back-button:hover { box-shadow: 0 0 5px #888, 0 0 10px #888; }
+        nav button { background-color: transparent; color: var(--text-color); border: 2px solid var(--primary-color); padding: 10px 20px; margin: 0 5px; cursor: pointer; font-size: 1em; font-weight: 700; border-radius: 5px; }
+        
+        /* --- СТИЛИ ДЛЯ БУРГЕР-МЕНЮ (скрыто на десктопе) --- */
+        #menu-toggle, #menu-close { display: none; }
+
+        .main-banner { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; height: 100vh; background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('generated_image_9eafcaba-d227-4f51-8c50-8f200777cfc3.png'); background-size: cover; background-position: center; color: var(--text-color); padding: 0 20px; }
+        .main-banner h1 { font-size: 5em; font-weight: 900; margin: 0; text-shadow: 0 0 20px rgba(0,0,0,0.5); }
+        .main-banner p { font-size: 1.5em; margin-bottom: 40px; max-width: 800px; line-height: 1.4; }
+        .play-button { background-color: var(--primary-color); color: var(--text-color); padding: 15px 40px; text-decoration: none; font-size: 1.5em; font-weight: 700; border-radius: 50px; }
+        .content-section { padding: 100px 0; opacity: 0; transform: translateY(30px); transition: opacity 0.8s ease-out, transform 0.8s ease-out; }
+        .content-section.visible { opacity: 1; transform: translateY(0); }
+        .content-section h2 { text-align: center; font-size: 2.8em; font-weight: 900; margin-bottom: 60px; color: var(--primary-color); text-transform: uppercase; }
+        .news-container, .server-list, #how-to-play .steps-container { display: flex; justify-content: center; gap: 30px; flex-wrap: wrap; }
+        .news-item, .server-item, .step-item { background: var(--card-bg); border-radius: 15px; transition: transform 0.3s, box-shadow 0.3s; }
+        .news-item:hover, .server-item:hover, .step-item:hover { transform: translateY(-10px); box-shadow: 0 8px 25px rgba(255, 102, 0, 0.2); }
+        .news-item { padding: 20px; width: 300px; }
+        .news-item h3 { margin-top: 0; color: var(--primary-color); }
+        .server-item { padding: 30px; border-top: 4px solid var(--primary-color); width: 300px; text-align: center; display: flex; flex-direction: column; }
+        .server-item h3 { margin: 0 0 15px 0; font-size: 1.5em; }
+        .progress-bar-container { width: 100%; height: 8px; background-color: rgba(0, 0, 0, 0.3); border: 1px solid #444; border-radius: 4px; overflow: hidden; margin-top: auto; }
+        .progress-bar-fill { height: 100%; width: 0; background-color: var(--primary-color); border-radius: 4px; transition: width 1.5s ease-out; }
+        .server-online-text { font-size: 1.1em; color: #ccc; margin-top: 10px; }
+        .social-icons { text-align: center; }
+        .social-icons a { position: relative; margin: 0 20px; font-size: 3em; color: var(--text-color); transition: color 0.3s, transform 0.3s; }
+        .social-icons a:hover { color: var(--primary-color); transform: scale(1.1); }
+        .social-icons a::after { content: attr(data-tooltip); position: absolute; bottom: 120%; left: 50%; transform: translateX(-50%); background-color: var(--primary-color); color: #fff; padding: 5px 10px; border-radius: 5px; font-size: 0.4em; white-space: nowrap; opacity: 0; visibility: hidden; transition: opacity 0.3s, visibility 0.3s; }
+        .social-icons a:hover::after { opacity: 1; visibility: visible; }
+        .step-item { position: relative; padding: 40px 20px; width: 300px; text-align: center; overflow: hidden; border: 1px solid rgba(255, 102, 0, 0.2); display: flex; flex-direction: column; justify-content: center; }
+        .step-number { position: absolute; top: -10px; left: 10px; font-size: 7em; font-weight: 900; color: rgba(255, 255, 255, 0.05); z-index: 1; }
+        .step-content { position: relative; z-index: 2; }
+        .step-content h3 { font-size: 1.5em; font-weight: 700; color: var(--primary-color); margin: 0 0 15px 0; }
+        .step-content p { font-size: 1em; line-height: 1.5; margin: 0; }
+        .download-button { display: inline-block; background-color: var(--primary-color); color: var(--text-color); padding: 15px 30px; margin-top: 20px; text-decoration: none; font-size: 1.2em; font-weight: 700; border-radius: 5px; }
+        .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.8); backdrop-filter: blur(5px); }
+        .modal-content { background-color: #1a1a1a; margin: 10% auto; padding: 30px; border: 1px solid var(--primary-color); width: 90%; max-width: 500px; border-radius: 10px; text-align: center; color: white; animation: modal-fade-in 0.5s; }
+        @keyframes modal-fade-in { from {transform: scale(0.9); opacity: 0;} to {transform: scale(1); opacity: 1;} }
+        .modal-content h2 { color: var(--primary-color); margin-top: 0; }
+        .modal-content input, .modal-content select { width: calc(100% - 40px); padding: 12px; margin: 10px 0; border-radius: 5px; border: 1px solid #555; background-color: #333; color: white; font-size: 1em; }
+        .modal-buttons { margin-top: 20px; }
+        .modal-buttons button { background-color: var(--primary-color); color: white; border: none; padding: 12px 24px; margin: 10px 5px; cursor: pointer; font-size: 1em; border-radius: 5px; }
+        .modal-buttons .back-button { background-color: #555; }
+        .forbes-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+        .forbes-table thead tr { border-bottom: 2px solid var(--primary-color); }
+        .forbes-table th, .forbes-table td { padding: 12px 15px; text-align: left; }
+        .forbes-table th { color: var(--primary-color); text-transform: uppercase; font-size: 0.9em; }
+        .forbes-table tbody tr { border-bottom: 1px solid #444; transition: background-color 0.3s; cursor: pointer; }
+        .forbes-table tbody tr:last-child { border-bottom: none; }
+        .forbes-table tbody tr:hover { background-color: rgba(255, 102, 0, 0.15); }
+        .forbes-table td:first-child { font-weight: bold; color: var(--primary-color); font-size: 1.2em; }
+        .player-profile-content { display: flex; gap: 20px; text-align: left; }
+        .player-skin { width: 150px; height: 250px; object-fit: cover; border-radius: 10px; background-color: #333; }
+        .player-info { flex-grow: 1; }
+        .player-info h2 { text-align: left; margin: 0 0 20px 0; }
+        .player-stats { list-style: none; padding: 0; margin: 0; }
+        .player-stats li { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #444; font-size: 1.1em; }
+        .player-stats li:last-child { border-bottom: none; }
+        .player-stats span { font-weight: bold; color: var(--primary-color); }
+        footer { text-align: center; padding: 40px 20px; margin-top: 60px; border-top: 1px solid #333; }
+        .footer-text { color: #888; font-size: 0.9em; }
+
+        /* --- СТИЛИ ДЛЯ МОБИЛЬНЫХ УСТРОЙСТВ --- */
+        @media (max-width: 768px) {
+            header { padding: 15px 20px; }
+            .logo { font-size: 1.5em; }
+
+            /* Скрываем десктопную навигацию и показываем бургер */
+            header nav {
+                display: none; /* Начально меню скрыто */
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0,0,0,0.95);
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                transform: none; /* Сбрасываем transform */
+            }
+            header nav.active {
+                display: flex; /* Показываем меню по классу active */
+            }
+            nav button { 
+                font-size: 1.5em;
+                margin: 20px 0;
+                padding: 15px 30px;
+            }
+
+            /* Стили для иконки бургера и крестика */
+            #menu-toggle {
+                display: block;
+                font-size: 1.8em;
+                color: #fff;
+                cursor: pointer;
+                z-index: 1001; /* Поверх шапки */
+            }
+            #menu-close {
+                display: block;
+                position: absolute;
+                top: 25px;
+                right: 25px;
+                font-size: 2.2em;
+                color: #fff;
+                cursor: pointer;
+            }
+
+            .main-banner h1 { font-size: 2.8em; }
+            .main-banner p { font-size: 1.1em; }
+            .content-section { padding: 60px 0; }
+            .content-section h2 { font-size: 2em; margin-bottom: 40px; }
+
+            .server-list, .news-container, #how-to-play .steps-container {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .social-icons a { margin: 0 10px; font-size: 2.5em; }
+            .social-icons a::after { display: none; } /* Скрываем подсказки на мобильных */
+
+            .player-profile-content { flex-direction: column; align-items: center; }
+            .player-skin { width: 120px; height: 200px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">FRIDE RP</div>
+        <!-- Иконка бургера -->
+        <div id="menu-toggle"><i class="fas fa-bars"></i></div>
+        <!-- Навигация -->
+        <nav id="main-nav">
+             <!-- Иконка закрытия -->
+            <div id="menu-close"><i class="fas fa-times"></i></div>
+            <button onclick="document.getElementById('forbesModal').style.display='block'">Forbes</button>
+            <button onclick="document.getElementById('loginModal').style.display='block'">Личный кабинет</button>
+            <button onclick="document.getElementById('donateModal').style.display='block'">Донат</button>
+        </nav>
+    </header>
+
+    <main class="main-banner">
+        <h1>FRIDE RolePlay</h1>
+        <p>Погрузись в мир, где ты решаешь всё. Покупай крутые машины, владей элитной недвижимостью, строй свою бизнес-империю и стань номером один в списке Forbes!</p>
+        <a href="#how-to-play" class="play-button">НАЧАТЬ ИГРАТЬ</a>
+    </main>
+
+    <section id="news" class="content-section">
+        <div class="container">
+            <h2>Последние новости</h2>
+            <div class="news-container">
+                <div class="news-item"><h3>Мы открылись!</h3><p>Наш проект FRIDE RolePlay официально запущен! Присоединяйтесь к нам и начните свою уникальную историю.</p></div>
+                <div class="news-item"><h3>У нас появился сайт!</h3><p>Мы рады представить вам наш новый сайт. Здесь вы найдете всю необходимую информацию о проекте.</p></div>
+                <div class="news-item"><h3>Новая мини-игра в Telegram!</h3><p>Зацените нашу новую захватывающую мини-игру в нашем Telegram-канале. Вас ждут призы!</p></div>
+            </div>
+        </div>
+    </section>
+    
+    <section id="servers" class="content-section">
+        <div class="container">
+            <h2>Наши сервера</h2>
+            <div class="server-list">
+                <div class="server-item" data-online="875" data-max="1000">
+                    <h3>FRIDE RP | SERVER 01</h3>
+                    <div class="progress-bar-container"><div class="progress-bar-fill"></div></div>
+                    <p class="server-online-text">875 / 1000</p>
+                </div>
+                <div class="server-item" data-online="912" data-max="1000">
+                    <h3>FRIDE RP | SERVER 02</h3>
+                     <div class="progress-bar-container"><div class="progress-bar-fill"></div></div>
+                    <p class="server-online-text">912 / 1000</p>
+                </div>
+                 <div class="server-item" data-online="750" data-max="1000">
+                    <h3>FRIDE RP | SERVER 03</h3>
+                     <div class="progress-bar-container"><div class="progress-bar-fill"></div></div>
+                    <p class="server-online-text">750 / 1000</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="how-to-play" class="content-section">
+        <div class="container">
+            <h2>Как начать игру</h2>
+            <div class="steps-container">
+                <div class="step-item"><div class="step-number">1</div><div class="step-content"><h3>Скачай лаунчер</h3><p>Загрузи наш официальный лаунчер — это твой билет в мир FRIDE.</p></div></div>
+                <div class="step-item"><div class="step-number">2</div><div class="step-content"><h3>Установи в любую папку</h3><p>Процесс установки займет всего пару минут. Выбери удобное место и следуй инструкциям.</p></div></div>
+                <div class="step-item"><div class="step-number">3</div><div class="step-content"><h3>Выбери сервер и играй</h3><p>Запускай лаунчер, выбирай сервер по душе и начинай своё восхождение к вершине!</p><a href="#" class="download-button">Установить лаунчер</a></div></div>
+            </div>
+        </div>
+    </section>
+    
+    <section id="socials" class="content-section">
+        <div class="container">
+            <h2>Мы в соцсетях</h2>
+            <div class="social-icons">
+                <a href="#" data-tooltip="Откроем группу Вконтакте"><i class="fab fa-vk"></i></a>
+                <a href="#" data-tooltip="Откроем Бота в Телеграмме"><i class="fab fa-telegram"></i></a>
+                <a href="#" data-tooltip="Откроем профиль в YouTube"><i class="fab fa-youtube"></i></a>
+                <a href="#" data-tooltip="Откроем профиль в TikTok"><i class="fab fa-tiktok"></i></a>
+            </div>
+        </div>
+    </section>
+    
+    <footer>
+        <p class="footer-text">© 2026 FRIDE RolePlay. Все права защищены. Работаем с 2025 года.</p>
+    </footer>
+
+    <!-- Модальные окна -->
+    <div id="forbesModal" class="modal">
+        <div class="modal-content">
+            <h2>Топ Forbes</h2>
+            <table class="forbes-table">
+                <thead><tr><th>#</th><th>Игрок</th><th>Состояние</th></tr></thead>
+                <tbody>
+                    <tr data-name="Tony_Stark" data-level="80" data-cash="150000000" data-assets="4850000000" data-skin="https://via.placeholder.com/150x250.png/111/fff?text=Skin+1"><td>1</td><td>Tony_Stark</td><td>5,000,000,000 ₽</td></tr>
+                    <tr data-name="John_Wick" data-level="95" data-cash="50000000" data-assets="4450000000" data-skin="https://via.placeholder.com/150x250.png/111/fff?text=Skin+2"><td>2</td><td>John_Wick</td><td>4,500,000,000 ₽</td></tr>
+                    <tr data-name="Trevor_Philips" data-level="65" data-cash="320000000" data-assets="2880000000" data-skin="https://via.placeholder.com/150x250.png/111/fff?text=Skin+3"><td>3</td><td>Trevor_Philips</td><td>3,200,000,000 ₽</td></tr>
+                    <tr data-name="Carl_Johnson" data-level="72" data-cash="80000000" data-assets="2720000000" data-skin="https://via.placeholder.com/150x250.png/111/fff?text=Skin+4"><td>4</td><td>Carl_Johnson</td><td>2,800,000,000 ₽</td></tr>
+                    <tr data-name="Big_Smoke" data-level="55" data-cash="150000000" data-assets="1350000000" data-skin="https://via.placeholder.com/150x250.png/111/fff?text=Skin+5"><td>5</td><td>Big_Smoke</td><td>1,500,000,000 ₽</td></tr>
+                </tbody>
+            </table>
+            <div class="modal-buttons">
+                <button type="button" class="back-button" onclick="document.getElementById('forbesModal').style.display='none'">Назад</button>
+            </div>
+        </div>
+    </div>
+    <div id="playerProfileModal" class="modal">
+        <div class="modal-content">
+             <div class="player-profile-content">
+                <img id="playerSkin" src="" alt="Скин игрока" class="player-skin">
+                <div class="player-info">
+                    <h2 id="playerName"></h2>
+                    <ul class="player-stats">
+                        <li>Уровень: <span id="playerLevel"></span></li>
+                        <li>На руках: <span id="playerCash"></span></li>
+                        <li>Имущество: <span id="playerAssets"></span></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="modal-buttons">
+                <button type="button" class="back-button" onclick="document.getElementById('playerProfileModal').style.display='none'">Назад</button>
+            </div>
+        </div>
+    </div>
+    <div id="loginModal" class="modal"><div class="modal-content"><h2>Личный кабинет</h2><input type="text" placeholder="Имя" required><input type="password" placeholder="Пароль" required><select><option>Server 01</option><option>Server 02</option><option>Server 03</option></select><div class="modal-buttons"><button type="submit">Продолжить</button><button type="button" class="back-button" onclick="document.getElementById('loginModal').style.display='none'">Назад</button></div></div></div>
+    <div id="donateModal" class="modal"><div class="modal-content"><h2>Донат</h2><input type="text" placeholder="Ваше имя" required><input type="number" placeholder="Сумма" required><div class="modal-buttons"><button type="submit">Продолжить</button><button type="button" class="back-button" onclick="document.getElementById('donateModal').style.display='none'">Назад</button></div></div></div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const sections = document.querySelectorAll('.content-section');
+            const observer = new IntersectionObserver(entries => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        if (entry.target.id === 'servers') {
+                            const serverItems = document.querySelectorAll('.server-item');
+                            serverItems.forEach(item => {
+                                const online = parseInt(item.dataset.online);
+                                const max = parseInt(item.dataset.max);
+                                const percentage = (online / max) * 100;
+                                const barFill = item.querySelector('.progress-bar-fill');
+                                setTimeout(() => { barFill.style.width = `${percentage}%`; }, 300);
+                            });
+                        }
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1 });
+            sections.forEach(section => observer.observe(section));
+
+            const header = document.querySelector('header');
+            window.addEventListener('scroll', () => {
+                header.style.background = (window.scrollY > 50) ? 'rgba(0, 0, 0, 0.9)' : 'rgba(0, 0, 0, 0.5)';
+            });
+
+            // --- ЛОГИКА ДЛЯ МОБИЛЬНОГО МЕНЮ ---
+            const menuToggle = document.getElementById('menu-toggle');
+            const menuClose = document.getElementById('menu-close');
+            const mainNav = document.getElementById('main-nav');
+            const navButtons = mainNav.querySelectorAll('button');
+
+            menuToggle.addEventListener('click', () => {
+                mainNav.classList.add('active');
+            });
+            menuClose.addEventListener('click', () => {
+                mainNav.classList.remove('active');
+            });
+             // Закрываем меню при клике на любую из кнопок
+            navButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    mainNav.classList.remove('active');
+                });
+            });
+
+
+            // --- СТАНДАРТНАЯ ЛОГИКА МОДАЛЬНЫХ ОКОН ---
+            const loginModal = document.getElementById('loginModal');
+            const donateModal = document.getElementById('donateModal');
+            const forbesModal = document.getElementById('forbesModal');
+            const playerProfileModal = document.getElementById('playerProfileModal');
+
+            window.addEventListener('click', (event) => {
+                if (event.target == loginModal) loginModal.style.display = "none";
+                if (event.target == donateModal) donateModal.style.display = "none";
+                if (event.target == forbesModal) forbesModal.style.display = "none";
+                if (event.target == playerProfileModal) playerProfileModal.style.display = "none";
+            });
+
+            const forbesTableRows = document.querySelectorAll('.forbes-table tbody tr');
+            forbesTableRows.forEach(row => {
+                row.addEventListener('click', () => {
+                    const name = row.dataset.name;
+                    const level = row.dataset.level;
+                    const cash = parseInt(row.dataset.cash).toLocaleString('ru-RU');
+                    const assets = parseInt(row.dataset.assets).toLocaleString('ru-RU');
+                    const skin = row.dataset.skin;
+
+                    document.getElementById('playerName').textContent = name;
+                    document.getElementById('playerLevel').textContent = level;
+                    document.getElementById('playerCash').textContent = `${cash} ₽`;
+                    document.getElementById('playerAssets').textContent = `${assets} ₽`;
+                    document.getElementById('playerSkin').src = skin;
+
+                    playerProfileModal.style.display = 'block';
+                });
+            });
+        });
+    </script>
+</body>
+</html>
