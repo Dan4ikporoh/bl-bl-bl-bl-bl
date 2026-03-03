@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FRIDE RolePlay</title>
+
+    <!-- Favicon: оранжевая "F" -->
+    <link rel="icon" type="image/svg+xml"
+          href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%23ff9a3c'/%3E%3Cstop offset='1' stop-color='%23ff6600'/%3E%3C/linearGradient%3E%3Cfilter id='s' x='-20%25' y='-20%25' width='140%25' height='140%25'%3E%3CfeDropShadow dx='0' dy='0' stdDeviation='2' flood-color='%23ff6600' flood-opacity='.55'/%3E%3C/filter%3E%3C/defs%3E%3Crect width='64' height='64' rx='14' fill='%23111111'/%3E%3Cpath d='M20 14h30v8H28v10h18v8H28v18h-8z' fill='url(%23g)' filter='url(%23s)'/%3E%3C/svg%3E" />
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #ff6600;
+            --background-color: #111111;
+            --text-color: #ffffff;
+            --card-bg: rgba(255, 255, 255, 0.05);
+        }
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Montserrat', sans-serif; margin: 0; padding: 0; background-color: var(--background-color); color: var(--text-color); overflow-x: hidden; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+
+        header { position: fixed; width: 100%; box-sizing: border-box; top: 0; left: 0; display: flex; justify-content: space-between; align-items: center; padding: 20px 40px; background: rgba(0, 0, 0, 0.5); z-index: 1000; transition: background 0.3s ease; }
+        .logo { font-size: 2em; font-weight: 900; text-transform: uppercase; flex-shrink: 0; }
+
+        nav { position: absolute; left: 50%; transform: translateX(-50%); }
+        nav button, .play-button, .download-button, .modal-buttons button { transition: background-color 0.3s, color 0.3s, transform 0.3s, box-shadow 0.3s; }
+        nav button:hover, .play-button:hover, .download-button:hover, .modal-buttons button:not(.back-button):hover:not(:disabled) {
+            box-shadow: 0 0 5px var(--primary-color), 0 0 15px var(--primary-color), 0 0 25px var(--primary-color);
+            color: #fff;
+        }
+        .modal-buttons .back-button:hover { box-shadow: 0 0 5px #888, 0 0 10px #888; }
+        nav button { background-color: transparent; color: var(--text-color); border: 2px solid var(--primary-color); padding: 10px 20px; margin: 0 5px; cursor: pointer; font-size: 1em; font-weight: 700; border-radius: 5px; }
+
+        /* --- СТИЛИ ДЛЯ БУРГЕР-МЕНЮ --- */
+        #menu-toggle, #menu-close { display: none; }
+
+        .main-banner { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; height: 100vh; background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('generated_image_9eafcaba-d227-4f51-8c50-8f200777cfc3.png'); background-size: cover; background-position: center; color: var(--text-color); padding: 0 20px; }
+        .main-banner h1 { font-size: 5em; font-weight: 900; margin: 0; text-shadow: 0 0 20px rgba(0,0,0,0.5); }
+        .main-banner p { font-size: 1.5em; margin-bottom: 40px; max-width: 800px; line-height: 1.4; }
+        .play-button { background-color: var(--primary-color); color: var(--text-color); padding: 15px 40px; text-decoration: none; font-size: 1.5em; font-weight: 700; border-radius: 50px; }
+
+        .content-section { padding: 100px 0; opacity: 0; transform: translateY(30px); transition: opacity 0.8s ease-out, transform 0.8s ease-out; }
+        .content-section.visible { opacity: 1; transform: translateY(0); }
+        .content-section h2 { text-align: center; font-size: 2.8em; font-weight: 900; margin-bottom: 60px; color: var(--primary-color); text-transform: uppercase; }
+
+        .news-container, .server-list, #how-to-play .steps-container { display: flex; justify-content: center; gap: 30px; flex-wrap: wrap; }
+        .news-item, .server-item, .step-item { background: var(--card-bg); border-radius: 15px; transition: transform 0.3s, box-shadow 0.3s; }
+        .news-item:hover, .server-item:hover, .step-item:hover { transform: translateY(-10px); box-shadow: 0 8px 25px rgba(255, 102, 0, 0.2); }
+
+        .news-item { padding: 20px; width: 300px; }
+        .news-item h3 { margin-top: 0; color: var(--primary-color); }
+
+        .server-item { padding: 30px; border-top: 4px solid var(--primary-color); width: 300px; text-align: center; display: flex; flex-direction: column; }
+        .server-item h3 { margin: 0 0 15px 0; font-size: 1.5em; }
+        .progress-bar-container { width: 100%; height: 8px; background-color: rgba(0, 0, 0, 0.3); border: 1px solid #444; border-radius: 4px; overflow: hidden; margin-top: auto; }
+        .progress-bar-fill { height: 100%; width: 0; background-color: var(--primary-color); border-radius: 4px; transition: width 1.5s ease-out; }
+        .server-online-text { font-size: 1.1em; color: #ccc; margin-top: 10px; }
+
+        .social-icons { text-align: center; }
+        .social-icons a { position: relative; margin: 0 20px; font-size: 3em; color: var(--text-color); transition: color 0.3s, transform 0.3s; }
+        .social-icons a:hover { color: var(--primary-color); transform: scale(1.1); }
+        .social-icons a::after { content: attr(data-tooltip); position: absolute; bottom: 120%; left: 50%; transform: translateX(-50%); background-color: var(--primary-color); color: #fff; padding: 5px 10px; border-radius: 5px; font-size: 0.4em; white-space: nowrap; opacity: 0; visibility: hidden; transition: opacity 0.3s, visibility 0.3s; }
+        .social-icons a:hover::after { opacity: 1; visibility: visible; }
+
+        .step-item { position: relative; padding: 40px 20px; width: 300px; text-align: center; overflow: hidden; border: 1px solid rgba(255, 102, 0, 0.2); display: flex; flex-direction: column; justify-content: center; }
+        .step-number { position: absolute; top: -10px; left: 10px; font-size: 7em; font-weight: 900; color: rgba(255, 255, 255, 0.05); z-index: 1; }
+        .step-content { position: relative; z-index: 2; }
+        .step-content h3 { font-size: 1.5em; font-weight: 700; color: var(--primary-color); margin: 0 0 15px 0; }
+        .step-content p { font-size: 1em; line-height: 1.5; margin: 0; }
+
+        .download-button { display: inline-block; background-color: var(--primary-color); color: var(--text-color); padding: 15px 30px; margin-top: 20px; text-decoration: none; font-size: 1.2em; font-weight: 700; border-radius: 5px; }
+
+        /* --- МОДАЛЬНЫЕ ОКНА --- */
+        .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.8); backdrop-filter: blur(5px); }
+        .modal-content { background-color: #1a1a1a; margin: 5% auto; padding: 30px; border: 1px solid var(--primary-color); width: 90%; max-width: 500px; border-radius: 10px; text-align: center; color: white; animation: modal-fade-in 0.5s; position: relative; }
+        @keyframes modal-fade-in { from {transform: scale(0.9); opacity: 0;} to {transform: scale(1); opacity: 1;} }
+
+        .modal-content h2 { color: var(--primary-color); margin-top: 0; }
+        .modal-content input, .modal-content select, .modal-content textarea { width: calc(100% - 40px); padding: 12px; margin: 10px 0; border-radius: 5px; border: 1px solid #555; background-color: #333; color: white; font-size: 1em; font-family: 'Montserrat', sans-serif; }
+        .modal-content textarea { resize: vertical; }
+
+        .modal-buttons { margin-top: 20px; }
+        .modal-buttons button { background-color: var(--primary-color); color: white; border: none; padding: 12px 24px; margin: 10px 5px; cursor: pointer; font-size: 1em; border-radius: 5px; }
+        .modal-buttons .back-button { background-color: #555; }
+        .modal-buttons button:disabled { opacity: 0.6; cursor: not-allowed; }
+
+        /* --- АНИМАЦИЯ УСПЕШНОЙ ОТПРАВКИ ЗАЯВКИ --- */
+        #success-message {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .success-checkmark {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: block;
+            stroke-width: 2;
+            stroke: #4bb71b;
+            stroke-miterlimit: 10;
+            margin: 0 auto 20px;
+            box-shadow: inset 0px 0px 0px #4bb71b;
+            animation: fill .4s ease-in-out .4s forwards, scale .3s ease-in-out .9s both;
+        }
+        .success-checkmark__circle {
+            stroke-dasharray: 166;
+            stroke-dashoffset: 166;
+            stroke-width: 2;
+            stroke-miterlimit: 10;
+            stroke: #4bb71b;
+            fill: none;
+            animation: stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+        }
+        .success-checkmark__check {
+            transform-origin: 50% 50%;
+            stroke-dasharray: 48;
+            stroke-dashoffset: 48;
+            animation: stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.8s forwards;
+        }
+        @keyframes stroke { 100% { stroke-dashoffset: 0; } }
+        @keyframes scale { 0%, 100% { transform: none; } 50% { transform: scale3d(1.1, 1.1, 1); } }
+        @keyframes fill { 100% { box-shadow: inset 0px 0px 0px 30px #4bb71b; } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        #success-message h3 { color: #4bb71b; font-size: 1.5em; margin: 0 0 10px 0; }
+        #success-message p { color: #ccc; font-size: 1em; line-height: 1.5; }
+
+        /* --- ОСТАЛЬНЫЕ СТИЛИ --- */
+        .forbes-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+        .forbes-table thead tr { border-bottom: 2px solid var(--primary-color); }
+        .forbes-table th, .forbes-table td { padding: 12px 15px; text-align: left; }
+        .forbes-table th { color: var(--primary-color); text-transform: uppercase; font-size: 0.9em; }
+        .forbes-table tbody tr { border-bottom: 1px solid #444; transition: background-color 0.3s; cursor: pointer; }
+        .forbes-table tbody tr:hover { background-color: rgba(255, 102, 0, 0.15); }
+        .forbes-table td:first-child { font-weight: bold; color: var(--primary-color); font-size: 1.2em; }
+
+        .player-profile-content { display: flex; gap: 20px; text-align: left; }
+        .player-skin { width: 150px; height: 250px; object-fit: cover; border-radius: 10px; background-color: #333; }
+        .player-info { flex-grow: 1; }
+        .player-info h2 { text-align: left; margin: 0 0 20px 0; }
+        .player-stats { list-style: none; padding: 0; margin: 0; }
+        .player-stats li { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #444; font-size: 1.1em; }
+        .player-stats span { font-weight: bold; color: var(--primary-color); margin-left: 15px; text-align: right; }
+
+        footer { text-align: center; padding: 40px 20px; margin-top: 60px; border-top: 1px solid #333; }
+        .footer-text { color: #888; font-size: 0.9em; }
+
+        /* --- СТИЛИ ДЛЯ МОБИЛЬНЫХ --- */
+        @media (max-width: 768px) {
+            header { padding: 15px 20px; }
+            .logo { font-size: 1.5em; }
+            header nav {
+                display: none; 
+                position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+                background-color: rgba(0,0,0,0.95);
+                flex-direction: column; justify-content: center; align-items: center;
+            }
+            header nav.active { display: flex; }
+            nav button { font-size: 1.5em; margin: 15px 0; padding: 15px 30px; }
+            #menu-toggle { display: block; font-size: 1.8em; color: #fff; cursor: pointer; z-index: 1001; }
+            #menu-close { display: block; position: absolute; top: 25px; right: 25px; font-size: 2.2em; color: #fff; cursor: pointer; }
+            .main-banner h1 { font-size: 2.8em; }
+            .main-banner p { font-size: 1.1em; }
+            .content-section { padding: 60px 0; }
+            .server-list, .news-container, #how-to-play .steps-container { flex-direction: column; align-items: center; }
+            .player-profile-content { flex-direction: column; align-items: center; }
+            .player-skin { width: 120px; height: 200px; }
+            .modal-content { margin: 15% auto; padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">FRIDE RP</div>
+        <div id="menu-toggle"><i class="fas fa-bars"></i></div>
+        <nav id="main-nav">
+            <div id="menu-close"><i class="fas fa-times"></i></div>
+            <button onclick="document.getElementById('forbesModal').style.display='block'">Forbes</button>
+            <button onclick="openApplyModal()">Заявки</button>
+            <button onclick="openAccountModal()">Личный кабинет</button>
+            <button onclick="document.getElementById('donateModal').style.display='block'">Донат</button>
+        </nav>
+    </header>
+
+    <main class="main-banner">
+        <h1>FRIDE RolePlay</h1>
+        <p>Погрузись в мир, где ты решаешь всё. Покупай крутые машины, владей элитной недвижимостью, строй свою бизнес-империю и стань номером один в списке Forbes!</p>
+        <a href="#how-to-play" class="play-button">НАЧАТЬ ИГРАТЬ</a>
+    </main>
+
+    <section id="news" class="content-section">
+        <div class="container">
+            <h2>Последние новости</h2>
+            <div class="news-container">
+                <div class="news-item"><h3>Мы открылись!</h3><p>Наш проект FRIDE RolePlay официально запущен! Присоединяйтесь к нам и начните свою уникальную историю.</p></div>
+                <div class="news-item"><h3>У нас появился сайт!</h3><p>Мы рады представить вам наш новый сайт. Здесь вы найдете всю необходимую информацию о проекте.</p></div>
+                <div class="news-item"><h3>Новая мини-игра в Telegram!</h3><p>Зацените нашу новую захватывающую мини-игру в нашем Telegram-канале. Вас ждут призы!</p></div>
+            </div>
+        </div>
+    </section>
+
+    <section id="servers" class="content-section">
+        <div class="container">
+            <h2>Наши сервера</h2>
+            <div class="server-list">
+                <div class="server-item" data-online="875" data-max="1000">
+                    <h3>FRIDE RP | SERVER 01</h3>
+                    <div class="progress-bar-container"><div class="progress-bar-fill"></div></div>
+                    <p class="server-online-text">875 / 1000</p>
+                </div>
+                <div class="server-item" data-online="912" data-max="1000">
+                    <h3>FRIDE RP | SERVER 02</h3>
+                     <div class="progress-bar-container"><div class="progress-bar-fill"></div></div>
+                    <p class="server-online-text">912 / 1000</p>
+                </div>
+                 <div class="server-item" data-online="750" data-max="1000">
+                    <h3>FRIDE RP | SERVER 03</h3>
+                     <div class="progress-bar-container"><div class="progress-bar-fill"></div></div>
+                    <p class="server-online-text">750 / 1000</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="how-to-play" class="content-section">
+        <div class="container">
+            <h2>Как начать игру</h2>
+            <div class="steps-container">
+                <div class="step-item"><div class="step-number">1</div><div class="step-content"><h3>Скачай лаунчер</h3><p>Загрузи наш официальный лаунчер — это твой билет в мир FRIDE.</p></div></div>
+                <div class="step-item"><div class="step-number">2</div><div class="step-content"><h3>Установи в любую папку</h3><p>Процесс установки займет всего пару минут. Выбери удобное место и следуй инструкциям.</p></div></div>
+                <div class="step-item"><div class="step-number">3</div><div class="step-content"><h3>Выбери сервер и играй</h3><p>Запускай лаунчер, выбирай сервер по душе и начинай своё восхождение к вершине!</p><a href="#" class="download-button">Установить лаунчер</a></div></div>
+            </div>
+        </div>
+    </section>
+
+    <section id="socials" class="content-section">
+        <div class="container">
+            <h2>Мы в соцсетях</h2>
+            <div class="social-icons">
+                <a href="#" data-tooltip="Откроем группу Вконтакте"><i class="fab fa-vk"></i></a>
+                <a href="#" data-tooltip="Откроем Бота в Телеграмме"><i class="fab fa-telegram"></i></a>
+                <a href="#" data-tooltip="Откроем профиль в YouTube"><i class="fab fa-youtube"></i></a>
+                <a href="#" data-tooltip="Откроем профиль в TikTok"><i class="fab fa-tiktok"></i></a>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p class="footer-text">© 2026 FRIDE RolePlay. Все права защищены. Работаем с 2025 года.</p>
+    </footer>
+
+    <!-- ================= МОДАЛЬНЫЕ ОКНА ================= -->
+
+    <!-- Модальное окно "ЗАЯВКИ" с AJAX отправкой и анимацией -->
+    <div id="applyModal" class="modal">
+        <div class="modal-content">
+
+            <!-- Сама форма -->
+            <div id="apply-form-container">
+                <h2>Заявка в команду</h2>
+                <form id="ajax-apply-form">
+                    <!-- Замените email на свой, если нужно -->
+                    <input type="hidden" id="apply-to-email" name="_to" value="Dan4ikporoh@gmail.com">
+                    <input type="hidden" name="_subject" value="Новая заявка на FRIDE RP!">
+                    <input type="hidden" name="_captcha" value="false">
+                    <input type="hidden" id="apply-url" name="_url" value="">
+
+                    <select name="Желаемая_должность" required>
+                        <option value="" disabled selected>Кем вы хотите стать?</option>
+                        <option value="Разработчик">Разработчик</option>
+                        <option value="Администратор">Администратор</option>
+                        <option value="Модератор форума/соцсетей">Модератор</option>
+                        <option value="Хелпер (Агент поддержки)">Хелпер (Поддержка)</option>
+                    </select>
+
+                    <textarea name="О_себе" placeholder="1. Расскажите о себе (Имя, возраст, часовой пояс)" required rows="3"></textarea>
+                    <textarea name="Опыт" placeholder="2. Ваш опыт (Где работали, что умеете)" required rows="3"></textarea>
+                    <textarea name="Почему_вы" placeholder="3. Почему мы должны взять именно вас?" required rows="3"></textarea>
+                    <input type="text" name="Контакты" placeholder="Ссылка на ВК или @username в Telegram" required>
+
+                    <div class="modal-buttons">
+                        <button type="submit" id="submit-btn">Отправить заявку</button>
+                        <button type="button" class="back-button" onclick="document.getElementById('applyModal').style.display='none'">Отмена</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Блок успешной отправки (Скрыт по умолчанию) -->
+            <div id="success-message">
+                <svg class="success-checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+                    <circle class="success-checkmark__circle" cx="26" cy="26" r="25" fill="none"/>
+                    <path class="success-checkmark__check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
+                </svg>
+                <h3>Отлично!</h3>
+                <p>Мы получили вашу заявку.<br>После рассмотрения мы свяжемся с вами!</p>
+                <div class="modal-buttons" style="margin-top: 30px;">
+                    <button type="button" onclick="document.getElementById('applyModal').style.display='none'">Закрыть</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Модальное окно Forbes -->
+    <div id="forbesModal" class="modal">
+        <div class="modal-content">
+            <h2>Топ Forbes</h2>
+            <table class="forbes-table">
+                <thead><tr><th>#</th><th>Игрок</th><th>Состояние</th></tr></thead>
+                <tbody>
+                    <tr data-name="Tony_Stark" data-level="80" data-cash="150000000" data-assets="4850000000" data-skin="https://via.placeholder.com/150x250.png/111/fff?text=Skin+1"><td>1</td><td>Tony_Stark</td><td>5,000,000,000 ₽</td></tr>
+                    <tr data-name="John_Wick" data-level="95" data-cash="50000000" data-assets="4450000000" data-skin="https://via.placeholder.com/150x250.png/111/fff?text=Skin+2"><td>2</td><td>John_Wick</td><td>4,500,000,000 ₽</td></tr>
+                </tbody>
+            </table>
+            <div class="modal-buttons">
+                <button type="button" class="back-button" onclick="document.getElementById('forbesModal').style.display='none'">Назад</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно Профиля Игрока (из Forbes) -->
+    <div id="playerProfileModal" class="modal">
+        <div class="modal-content">
+             <div class="player-profile-content">
+                <img id="playerSkin" src="" alt="Скин игрока" class="player-skin">
+                <div class="player-info">
+                    <h2 id="playerName"></h2>
+                    <ul class="player-stats">
+                        <li>Уровень: <span id="playerLevel"></span></li>
+                        <li>На руках: <span id="playerCash"></span></li>
+                        <li>Имущество: <span id="playerAssets"></span></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="modal-buttons">
+                <button type="button" class="back-button" onclick="document.getElementById('playerProfileModal').style.display='none'">Назад</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно Логина -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <h2>Личный кабинет</h2>
+            <input id="login-username" type="text" placeholder="Имя (name)" autocomplete="username" required>
+            <input id="login-password" type="password" placeholder="Пароль" autocomplete="current-password" required>
+
+            <p id="login-error" style="display:none; color:#ff5555; margin:10px 0 0 0;"></p>
+
+            <div class="modal-buttons">
+                <button type="button" id="login-submit">Войти</button>
+                <button type="button" class="back-button" onclick="document.getElementById('loginModal').style.display='none'">Назад</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно Профиля (Личный кабинет) -->
+    <div id="accountModal" class="modal">
+      <div class="modal-content">
+        <div class="player-profile-content">
+          <img id="accSkin" src="https://via.placeholder.com/150x250.png/111/fff?text=Skin" alt="Скин" class="player-skin">
+
+          <div class="player-info">
+            <h2 id="accName" style="margin:0 0 20px 0;">Профиль</h2>
+            <ul class="player-stats">
+              <li>Email: <span id="accEmail">—</span></li>
+              <li>Уровень: <span id="accLevel">—</span></li>
+              <li>EXP: <span id="accExp">—</span></li>
+              <li>Наличные: <span id="accMoney">—</span></li>
+              <li>Банк: <span id="accBank">—</span></li>
+              <li>Капитал: <span id="accTotal">—</span></li>
+              <li>Донат (текущий): <span id="accDonateCur">—</span></li>
+              <li>Донат (всего): <span id="accDonateTotal">—</span></li>
+              <li>Golds: <span id="accGolds">—</span></li>
+              <li>Premium: <span id="accPremium">—</span></li>
+              <li>Admin: <span id="accAdmin">—</span></li>
+              <li>Последний вход: <span id="accLastLogin">—</span></li>
+              <li>Last IP: <span id="accLastIp">—</span></li>
+            </ul>
+          </div>
+        </div>
+
+        <p id="accStatus" style="color:#ccc; margin:15px 0 0 0;"></p>
+
+        <div class="modal-buttons">
+          <button type="button" onclick="refreshAccount()">Обновить</button>
+          <button type="button" class="back-button" onclick="logoutAccount()">Выйти</button>
+          <button type="button" class="back-button" onclick="document.getElementById('accountModal').style.display='none'">Закрыть</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Модальное окно Доната -->
+    <div id="donateModal" class="modal">
+        <div class="modal-content">
+            <h2>Донат</h2>
+            <input id="donate-username" type="text" placeholder="Ник игрока (name как в игре)" required>
+            <input id="donate-amount" type="number" placeholder="Сумма (RUB)" min="10" required>
+
+            <p id="donate-error" style="display:none; color:#ff5555; margin:10px 0 0 0;"></p>
+
+            <div class="modal-buttons">
+                <button type="button" id="donate-pay-btn">Перейти к оплате</button>
+                <button type="button" class="back-button" onclick="document.getElementById('donateModal').style.display='none'">Назад</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Анимация при скролле (Сервера и новости)
+            const sections = document.querySelectorAll('.content-section');
+            const observer = new IntersectionObserver(entries => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        if (entry.target.id === 'servers') {
+                            const serverItems = document.querySelectorAll('.server-item');
+                            serverItems.forEach(item => {
+                                const online = parseInt(item.dataset.online);
+                                const max = parseInt(item.dataset.max);
+                                const percentage = (online / max) * 100;
+                                const barFill = item.querySelector('.progress-bar-fill');
+                                setTimeout(() => { barFill.style.width = `${percentage}%`; }, 300);
+                            });
+                        }
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            sections.forEach(section => observer.observe(section));
+
+            // Смена фона шапки
+            const header = document.querySelector('header');
+            window.addEventListener('scroll', () => {
+                header.style.background = (window.scrollY > 50) ? 'rgba(0, 0, 0, 0.9)' : 'rgba(0, 0, 0, 0.5)';
+            });
+
+            // Логика мобильного меню
+            const menuToggle = document.getElementById('menu-toggle');
+            const menuClose = document.getElementById('menu-close');
+            const mainNav = document.getElementById('main-nav');
+            const navButtons = mainNav.querySelectorAll('button');
+
+            menuToggle.addEventListener('click', () => mainNav.classList.add('active'));
+            menuClose.addEventListener('click', () => mainNav.classList.remove('active'));
+            navButtons.forEach(btn => btn.addEventListener('click', () => mainNav.classList.remove('active')));
+
+            // Закрытие модалок при клике вне окна
+            const modals = document.querySelectorAll('.modal');
+            window.addEventListener('click', (event) => {
+                modals.forEach(modal => {
+                    if (event.target == modal) modal.style.display = "none";
+                });
+            });
+
+            // Логика Forbes
+            const forbesTableRows = document.querySelectorAll('.forbes-table tbody tr');
+            const playerProfileModal = document.getElementById('playerProfileModal');
+            forbesTableRows.forEach(row => {
+                row.addEventListener('click', () => {
+                    document.getElementById('playerName').textContent = row.dataset.name;
+                    document.getElementById('playerLevel').textContent = row.dataset.level;
+                    document.getElementById('playerCash').textContent = `${parseInt(row.dataset.cash).toLocaleString('ru-RU')} ₽`;
+                    document.getElementById('playerAssets').textContent = `${parseInt(row.dataset.assets).toLocaleString('ru-RU')} ₽`;
+                    document.getElementById('playerSkin').src = row.dataset.skin;
+                    playerProfileModal.style.display = 'block';
+                });
+            });
+
+            // ==========================================
+            // ЛОГИКА ОТПРАВКИ ФОРМЫ "ЗАЯВКИ" (AJAX)
+            // ==========================================
+            const APPLY_EMAIL = "Dan4ikporoh@gmail.com";
+
+            const applyForm = document.getElementById('ajax-apply-form');
+            const formContainer = document.getElementById('apply-form-container');
+            const successMessage = document.getElementById('success-message');
+            const submitBtn = document.getElementById('submit-btn');
+
+            // Email для FormSubmit (заявки)
+            const applyToEl = document.getElementById('apply-to-email');
+            if (applyToEl) applyToEl.value = APPLY_EMAIL;
+            const applyUrlEl = document.getElementById('apply-url');
+            if (applyUrlEl) applyUrlEl.value = window.location.href;
+
+            applyForm.addEventListener('submit', function(e) {
+                e.preventDefault(); // Останавливаем стандартную перезагрузку страницы
+
+                // Меняем текст кнопки и блокируем её
+                submitBtn.textContent = 'Отправка...';
+                submitBtn.disabled = true;
+
+                // Собираем данные из формы
+                const formData = new FormData(applyForm);
+
+                // Отправляем данные через fetch API на FormSubmit
+                fetch("https://formsubmit.co/ajax/" + encodeURIComponent(APPLY_EMAIL), {
+                    method: "POST",
+                    headers: { 'Accept': 'application/json' },
+                    body: formData
+                })
+                .then(async (response) => {
+                    // FormSubmit часто возвращает success как строку "true"/"false"
+                    let data = null;
+                    try {
+                        data = await response.json();
+                    } catch (e) {
+                        data = null;
+                    }
+
+                    if (!data) {
+                        throw new Error("Сервис заявок вернул некорректный ответ.");
+                    }
+
+                    const ok = (data.success === true || data.success === "true");
+                    if (!ok) {
+                        // Покажем реальную причину (например: сайт открыт как файл, или нужна активация формы)
+                        throw new Error(data.message || "Ошибка отправки. Попробуйте позже.");
+                    }
+
+                    return data;
+                })
+                .then(() => {
+                    // Если успешно: скрываем форму, показываем галочку
+                    formContainer.style.display = 'none';
+                    successMessage.style.display = 'flex';
+                })
+                .catch(error => {
+                    console.error("Ошибка:", error);
+                    alert(error.message || "Произошла ошибка при отправке заявки.");
+                    submitBtn.textContent = 'Отправить заявку';
+                    submitBtn.disabled = false;
+                });
+            });
+
+            // ==========================================
+            // ЛИЧНЫЙ КАБИНЕТ (backend + MySQL через api/)
+            // ==========================================
+            const loginModal = document.getElementById('loginModal');
+            const accountModal = document.getElementById('accountModal');
+
+            const loginUserInput = document.getElementById('login-username');
+            const loginPassInput = document.getElementById('login-password');
+            const loginSubmitBtn = document.getElementById('login-submit');
+            const loginError = document.getElementById('login-error');
+
+            function formatIntLike(value) {
+                if (value === null || value === undefined) return '0';
+                const s = String(value).trim();
+                if (s === '') return '0';
+                try {
+                    // BigInt для больших чисел
+                    return BigInt(s).toLocaleString('ru-RU');
+                } catch (e) {
+                    const n = Number(s);
+                    if (Number.isFinite(n)) return n.toLocaleString('ru-RU');
+                    return s;
+                }
+            }
+            function formatRub(value) {
+                return `${formatIntLike(value)} ₽`;
+            }
+            function formatTs(unixSeconds) {
+                const n = Number(unixSeconds || 0);
+                if (!Number.isFinite(n) || n <= 0) return '—';
+                return new Date(n * 1000).toLocaleString('ru-RU');
+            }
+
+            async function apiGet(url) {
+                const resp = await fetch(url, { credentials: 'include' });
+                const json = await resp.json().catch(() => ({}));
+                if (!resp.ok || !json.ok) throw new Error(json.error || 'Ошибка запроса');
+                return json;
+            }
+
+            async function apiPost(url, data) {
+                const resp = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify(data)
+                });
+                const json = await resp.json().catch(() => ({}));
+                if (!resp.ok || !json.ok) throw new Error(json.error || 'Ошибка запроса');
+                return json;
+            }
+
+            function renderAccount(user) {
+                document.getElementById('accName').textContent = user.name ?? 'Профиль';
+                document.getElementById('accEmail').textContent = user.email ?? '—';
+                document.getElementById('accLevel').textContent = user.level ?? '0';
+                document.getElementById('accExp').textContent = user.exp ?? '0';
+
+                document.getElementById('accMoney').textContent = formatRub(user.money);
+                document.getElementById('accBank').textContent = formatRub(user.bank);
+
+                // капитал = money + bank (как минимум)
+                try {
+                    const total = BigInt(String(user.money || '0')) + BigInt(String(user.bank || '0'));
+                    document.getElementById('accTotal').textContent = `${total.toLocaleString('ru-RU')} ₽`;
+                } catch (e) {
+                    document.getElementById('accTotal').textContent = '—';
+                }
+
+                document.getElementById('accDonateCur').textContent = formatIntLike(user.donate_current);
+                document.getElementById('accDonateTotal').textContent = formatIntLike(user.donate_total);
+                document.getElementById('accGolds').textContent = formatIntLike(user.golds);
+
+                document.getElementById('accPremium').textContent = (Number(user.premium) > 0) ? 'Да' : 'Нет';
+                document.getElementById('accAdmin').textContent = formatIntLike(user.admin);
+
+                document.getElementById('accLastLogin').textContent = formatTs(user.last_login);
+                document.getElementById('accLastIp').textContent = user.last_ip ?? '—';
+
+                // skin -> placeholder
+                const skinId = Number(user.skin || 0);
+                if (Number.isFinite(skinId) && skinId >= 0) {
+                    document.getElementById('accSkin').src = `https://via.placeholder.com/150x250.png/111/fff?text=Skin+${encodeURIComponent(String(skinId))}`;
+                }
+
+                document.getElementById('accStatus').textContent = 'Данные загружены.';
+            }
+
+            async function loadAccount() {
+                document.getElementById('accStatus').textContent = 'Загрузка...';
+                const json = await apiGet('api/profile.php');
+                renderAccount(json.user);
+                return true;
+            }
+
+            // Глобальные функции для onclick=""
+            window.openAccountModal = async function () {
+                try {
+                    await loadAccount();
+                    accountModal.style.display = 'block';
+                } catch (e) {
+                    // не авторизован → показываем логин
+                    loginModal.style.display = 'block';
+                }
+            };
+
+            window.refreshAccount = async function () {
+                try {
+                    await loadAccount();
+                } catch (e) {
+                    accountModal.style.display = 'none';
+                    loginModal.style.display = 'block';
+                }
+            };
+
+            window.logoutAccount = async function () {
+                try { await apiGet('api/logout.php'); } catch (e) {}
+                accountModal.style.display = 'none';
+                loginModal.style.display = 'block';
+            };
+
+            loginSubmitBtn.addEventListener('click', async () => {
+                loginError.style.display = 'none';
+
+                const username = loginUserInput.value.trim();
+                const password = loginPassInput.value;
+
+                if (!username || !password) {
+                    loginError.textContent = 'Введите логин и пароль.';
+                    loginError.style.display = 'block';
+                    return;
+                }
+
+                loginSubmitBtn.disabled = true;
+                const oldText = loginSubmitBtn.textContent;
+                loginSubmitBtn.textContent = 'Вход...';
+
+                try {
+                    const json = await apiPost('api/login.php', { username, password });
+                    loginModal.style.display = 'none';
+                    renderAccount(json.user);
+                    accountModal.style.display = 'block';
+                } catch (e) {
+                    loginError.textContent = e.message || 'Ошибка входа';
+                    loginError.style.display = 'block';
+                } finally {
+                    loginSubmitBtn.disabled = false;
+                    loginSubmitBtn.textContent = oldText;
+                }
+            });
+
+            // Вход по Enter
+            [loginUserInput, loginPassInput].forEach(el => {
+                el.addEventListener('keydown', (ev) => {
+                    if (ev.key === 'Enter') loginSubmitBtn.click();
+                });
+            });
+
+            // ==========================================
+            // ДОНАТ (создание ссылки на оплату)
+            // ==========================================
+            const donateUser = document.getElementById('donate-username');
+            const donateAmount = document.getElementById('donate-amount');
+            const donateBtn = document.getElementById('donate-pay-btn');
+            const donateErr = document.getElementById('donate-error');
+
+            donateBtn.addEventListener('click', async () => {
+                donateErr.style.display = 'none';
+
+                const username = donateUser.value.trim();
+                const amount = Number(donateAmount.value);
+
+                if (!username || !amount || amount < 10) {
+                    donateErr.textContent = 'Укажите ник и сумму (минимум 10).';
+                    donateErr.style.display = 'block';
+                    return;
+                }
+
+                donateBtn.disabled = true;
+                const oldText = donateBtn.textContent;
+                donateBtn.textContent = 'Создаём платёж...';
+
+                try {
+                    const resp = await fetch('api/donate_create.php', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ username, amount })
+                    });
+                    const json = await resp.json().catch(() => ({}));
+
+                    if (!resp.ok || !json.ok) throw new Error(json.error || 'Ошибка создания платежа');
+
+                    window.location.href = json.redirectUrl;
+                } catch (e) {
+                    donateErr.textContent = e.message || 'Ошибка';
+                    donateErr.style.display = 'block';
+                } finally {
+                    donateBtn.disabled = false;
+                    donateBtn.textContent = oldText;
+                }
+            });
+        });
+
+        // Функция открытия модалки заявок (чтобы сбрасывать состояние при повторном открытии)
+        function openApplyModal() {
+            document.getElementById('apply-form-container').style.display = 'block';
+            document.getElementById('success-message').style.display = 'none';
+            document.getElementById('ajax-apply-form').reset();
+            const submitBtn = document.getElementById('submit-btn');
+            submitBtn.textContent = 'Отправить заявку';
+            submitBtn.disabled = false;
+            document.getElementById('applyModal').style.display = 'block';
+        }
+    </script>
+</body>
+</html>
