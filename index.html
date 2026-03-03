@@ -22,14 +22,14 @@
         
         nav { position: absolute; left: 50%; transform: translateX(-50%); }
         nav button, .play-button, .download-button, .modal-buttons button { transition: background-color 0.3s, color 0.3s, transform 0.3s, box-shadow 0.3s; }
-        nav button:hover, .play-button:hover, .download-button:hover, .modal-buttons button:not(.back-button):hover {
+        nav button:hover, .play-button:hover, .download-button:hover, .modal-buttons button:not(.back-button):hover:not(:disabled) {
             box-shadow: 0 0 5px var(--primary-color), 0 0 15px var(--primary-color), 0 0 25px var(--primary-color);
             color: #fff;
         }
         .modal-buttons .back-button:hover { box-shadow: 0 0 5px #888, 0 0 10px #888; }
         nav button { background-color: transparent; color: var(--text-color); border: 2px solid var(--primary-color); padding: 10px 20px; margin: 0 5px; cursor: pointer; font-size: 1em; font-weight: 700; border-radius: 5px; }
         
-        /* --- СТИЛИ ДЛЯ БУРГЕР-МЕНЮ (скрыто на десктопе) --- */
+        /* --- СТИЛИ ДЛЯ БУРГЕР-МЕНЮ --- */
         #menu-toggle, #menu-close { display: none; }
         
         .main-banner { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; height: 100vh; background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('generated_image_9eafcaba-d227-4f51-8c50-8f200777cfc3.png'); background-size: cover; background-position: center; color: var(--text-color); padding: 0 20px; }
@@ -68,24 +68,70 @@
         
         .download-button { display: inline-block; background-color: var(--primary-color); color: var(--text-color); padding: 15px 30px; margin-top: 20px; text-decoration: none; font-size: 1.2em; font-weight: 700; border-radius: 5px; }
         
+        /* --- МОДАЛЬНЫЕ ОКНА --- */
         .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.8); backdrop-filter: blur(5px); }
-        .modal-content { background-color: #1a1a1a; margin: 5% auto; padding: 30px; border: 1px solid var(--primary-color); width: 90%; max-width: 500px; border-radius: 10px; text-align: center; color: white; animation: modal-fade-in 0.5s; }
+        .modal-content { background-color: #1a1a1a; margin: 5% auto; padding: 30px; border: 1px solid var(--primary-color); width: 90%; max-width: 500px; border-radius: 10px; text-align: center; color: white; animation: modal-fade-in 0.5s; position: relative; }
         @keyframes modal-fade-in { from {transform: scale(0.9); opacity: 0;} to {transform: scale(1); opacity: 1;} }
         
         .modal-content h2 { color: var(--primary-color); margin-top: 0; }
         .modal-content input, .modal-content select, .modal-content textarea { width: calc(100% - 40px); padding: 12px; margin: 10px 0; border-radius: 5px; border: 1px solid #555; background-color: #333; color: white; font-size: 1em; font-family: 'Montserrat', sans-serif; }
-        .modal-content textarea { resize: vertical; } /* Позволяет растягивать поле вниз */
+        .modal-content textarea { resize: vertical; }
         
         .modal-buttons { margin-top: 20px; }
         .modal-buttons button { background-color: var(--primary-color); color: white; border: none; padding: 12px 24px; margin: 10px 5px; cursor: pointer; font-size: 1em; border-radius: 5px; }
         .modal-buttons .back-button { background-color: #555; }
+        .modal-buttons button:disabled { opacity: 0.6; cursor: not-allowed; }
         
+        /* --- АНИМАЦИЯ УСПЕШНОЙ ОТПРАВКИ ЗАЯВКИ --- */
+        #success-message {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        
+        .success-checkmark {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: block;
+            stroke-width: 2;
+            stroke: #4bb71b;
+            stroke-miterlimit: 10;
+            margin: 0 auto 20px;
+            box-shadow: inset 0px 0px 0px #4bb71b;
+            animation: fill .4s ease-in-out .4s forwards, scale .3s ease-in-out .9s both;
+        }
+        .success-checkmark__circle {
+            stroke-dasharray: 166;
+            stroke-dashoffset: 166;
+            stroke-width: 2;
+            stroke-miterlimit: 10;
+            stroke: #4bb71b;
+            fill: none;
+            animation: stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+        }
+        .success-checkmark__check {
+            transform-origin: 50% 50%;
+            stroke-dasharray: 48;
+            stroke-dashoffset: 48;
+            animation: stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.8s forwards;
+        }
+        @keyframes stroke { 100% { stroke-dashoffset: 0; } }
+        @keyframes scale { 0%, 100% { transform: none; } 50% { transform: scale3d(1.1, 1.1, 1); } }
+        @keyframes fill { 100% { box-shadow: inset 0px 0px 0px 30px #4bb71b; } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        #success-message h3 { color: #4bb71b; font-size: 1.5em; margin: 0 0 10px 0; }
+        #success-message p { color: #ccc; font-size: 1em; line-height: 1.5; }
+
+        /* --- ОСТАЛЬНЫЕ СТИЛИ --- */
         .forbes-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
         .forbes-table thead tr { border-bottom: 2px solid var(--primary-color); }
         .forbes-table th, .forbes-table td { padding: 12px 15px; text-align: left; }
         .forbes-table th { color: var(--primary-color); text-transform: uppercase; font-size: 0.9em; }
         .forbes-table tbody tr { border-bottom: 1px solid #444; transition: background-color 0.3s; cursor: pointer; }
-        .forbes-table tbody tr:last-child { border-bottom: none; }
         .forbes-table tbody tr:hover { background-color: rgba(255, 102, 0, 0.15); }
         .forbes-table td:first-child { font-weight: bold; color: var(--primary-color); font-size: 1.2em; }
         
@@ -95,64 +141,29 @@
         .player-info h2 { text-align: left; margin: 0 0 20px 0; }
         .player-stats { list-style: none; padding: 0; margin: 0; }
         .player-stats li { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #444; font-size: 1.1em; }
-        .player-stats li:last-child { border-bottom: none; }
         .player-stats span { font-weight: bold; color: var(--primary-color); }
         
         footer { text-align: center; padding: 40px 20px; margin-top: 60px; border-top: 1px solid #333; }
         .footer-text { color: #888; font-size: 0.9em; }
         
-        /* --- СТИЛИ ДЛЯ МОБИЛЬНЫХ УСТРОЙСТВ --- */
+        /* --- СТИЛИ ДЛЯ МОБИЛЬНЫХ --- */
         @media (max-width: 768px) {
             header { padding: 15px 20px; }
             .logo { font-size: 1.5em; }
-            /* Скрываем десктопную навигацию и показываем бургер */
             header nav {
                 display: none; 
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
+                position: fixed; top: 0; left: 0; width: 100%; height: 100%;
                 background-color: rgba(0,0,0,0.95);
-                flex-direction: column;
-                justify-content: center;
-                align-items: center;
-                transform: none; 
+                flex-direction: column; justify-content: center; align-items: center;
             }
-            header nav.active {
-                display: flex; 
-            }
-            nav button { 
-                font-size: 1.5em;
-                margin: 15px 0;
-                padding: 15px 30px;
-            }
-            #menu-toggle {
-                display: block;
-                font-size: 1.8em;
-                color: #fff;
-                cursor: pointer;
-                z-index: 1001;
-            }
-            #menu-close {
-                display: block;
-                position: absolute;
-                top: 25px;
-                right: 25px;
-                font-size: 2.2em;
-                color: #fff;
-                cursor: pointer;
-            }
+            header nav.active { display: flex; }
+            nav button { font-size: 1.5em; margin: 15px 0; padding: 15px 30px; }
+            #menu-toggle { display: block; font-size: 1.8em; color: #fff; cursor: pointer; z-index: 1001; }
+            #menu-close { display: block; position: absolute; top: 25px; right: 25px; font-size: 2.2em; color: #fff; cursor: pointer; }
             .main-banner h1 { font-size: 2.8em; }
             .main-banner p { font-size: 1.1em; }
             .content-section { padding: 60px 0; }
-            .content-section h2 { font-size: 2em; margin-bottom: 40px; }
-            .server-list, .news-container, #how-to-play .steps-container {
-                flex-direction: column;
-                align-items: center;
-            }
-            .social-icons a { margin: 0 10px; font-size: 2.5em; }
-            .social-icons a::after { display: none; } 
+            .server-list, .news-container, #how-to-play .steps-container { flex-direction: column; align-items: center; }
             .player-profile-content { flex-direction: column; align-items: center; }
             .player-skin { width: 120px; height: 200px; }
             .modal-content { margin: 15% auto; padding: 20px; }
@@ -163,15 +174,11 @@
 
     <header>
         <div class="logo">FRIDE RP</div>
-        <!-- Иконка бургера -->
         <div id="menu-toggle"><i class="fas fa-bars"></i></div>
-        <!-- Навигация -->
         <nav id="main-nav">
-             <!-- Иконка закрытия -->
             <div id="menu-close"><i class="fas fa-times"></i></div>
-            
             <button onclick="document.getElementById('forbesModal').style.display='block'">Forbes</button>
-            <button onclick="document.getElementById('applyModal').style.display='block'">Заявки</button>
+            <button onclick="openApplyModal()">Заявки</button>
             <button onclick="document.getElementById('loginModal').style.display='block'">Личный кабинет</button>
             <button onclick="document.getElementById('donateModal').style.display='block'">Донат</button>
         </nav>
@@ -244,39 +251,54 @@
         <p class="footer-text">© 2026 FRIDE RolePlay. Все права защищены. Работаем с 2025 года.</p>
     </footer>
 
-    <!-- Модальные окна -->
+    <!-- ================= МОДАЛЬНЫЕ ОКНА ================= -->
     
-    <!-- МОДАЛЬНОЕ ОКНО "ЗАЯВКИ" -->
+    <!-- Модальное окно "ЗАЯВКИ" с AJAX отправкой и анимацией -->
     <div id="applyModal" class="modal">
         <div class="modal-content">
-            <h2>Заявка в команду</h2>
             
-            <!-- Форма отправляет данные через сервис FormSubmit напрямую на твою почту -->
-            <form action="https://formsubmit.co/Dan4ikporoh@gmail.com" method="POST">
-                
-                <!-- Скрытые настройки для корректной отправки -->
-                <input type="hidden" name="_subject" value="Новая заявка на FRIDE RP!">
-                <input type="hidden" name="_captcha" value="false">
-                
-                <select name="Желаемая_должность" required>
-                    <option value="" disabled selected>Кем вы хотите стать?</option>
-                    <option value="Разработчик">Разработчик</option>
-                    <option value="Администратор">Администратор</option>
-                    <option value="Модератор форума/соцсетей">Модератор</option>
-                    <option value="Хелпер (Агент поддержки)">Хелпер (Поддержка)</option>
-                </select>
-                
-                <textarea name="О_себе_Основное" placeholder="1. Расскажите о себе (Имя, возраст, ваш часовой пояс)" required rows="3"></textarea>
-                <textarea name="О_себе_Опыт" placeholder="2. Расскажите о своем опыте (Где работали, что умеете)" required rows="3"></textarea>
-                <textarea name="О_себе_Почему_Вы" placeholder="3. Почему мы должны взять именно вас?" required rows="3"></textarea>
-                
-                <input type="text" name="Контакты_для_связи" placeholder="Ссылка на ВК или ваш @username в Telegram" required>
-                
-                <div class="modal-buttons">
-                    <button type="submit">Отправить заявку</button>
-                    <button type="button" class="back-button" onclick="document.getElementById('applyModal').style.display='none'">Отмена</button>
+            <!-- Сама форма -->
+            <div id="apply-form-container">
+                <h2>Заявка в команду</h2>
+                <form id="ajax-apply-form">
+                    <!-- Замените email на свой, если нужно -->
+                    <input type="hidden" name="_to" value="Dan4ikporoh@gmail.com">
+                    <input type="hidden" name="_subject" value="Новая заявка на FRIDE RP!">
+                    <input type="hidden" name="_captcha" value="false">
+                    
+                    <select name="Желаемая_должность" required>
+                        <option value="" disabled selected>Кем вы хотите стать?</option>
+                        <option value="Разработчик">Разработчик</option>
+                        <option value="Администратор">Администратор</option>
+                        <option value="Модератор форума/соцсетей">Модератор</option>
+                        <option value="Хелпер (Агент поддержки)">Хелпер (Поддержка)</option>
+                    </select>
+                    
+                    <textarea name="О_себе" placeholder="1. Расскажите о себе (Имя, возраст, часовой пояс)" required rows="3"></textarea>
+                    <textarea name="Опыт" placeholder="2. Ваш опыт (Где работали, что умеете)" required rows="3"></textarea>
+                    <textarea name="Почему_вы" placeholder="3. Почему мы должны взять именно вас?" required rows="3"></textarea>
+                    <input type="text" name="Контакты" placeholder="Ссылка на ВК или @username в Telegram" required>
+                    
+                    <div class="modal-buttons">
+                        <button type="submit" id="submit-btn">Отправить заявку</button>
+                        <button type="button" class="back-button" onclick="document.getElementById('applyModal').style.display='none'">Отмена</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Блок успешной отправки (Скрыт по умолчанию) -->
+            <div id="success-message">
+                <svg class="success-checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+                    <circle class="success-checkmark__circle" cx="26" cy="26" r="25" fill="none"/>
+                    <path class="success-checkmark__check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
+                </svg>
+                <h3>Отлично!</h3>
+                <p>Мы получили вашу заявку.<br>После рассмотрения мы свяжемся с вами!</p>
+                <div class="modal-buttons" style="margin-top: 30px;">
+                    <button type="button" onclick="document.getElementById('applyModal').style.display='none'">Закрыть</button>
                 </div>
-            </form>
+            </div>
+
         </div>
     </div>
 
@@ -289,9 +311,6 @@
                 <tbody>
                     <tr data-name="Tony_Stark" data-level="80" data-cash="150000000" data-assets="4850000000" data-skin="https://via.placeholder.com/150x250.png/111/fff?text=Skin+1"><td>1</td><td>Tony_Stark</td><td>5,000,000,000 ₽</td></tr>
                     <tr data-name="John_Wick" data-level="95" data-cash="50000000" data-assets="4450000000" data-skin="https://via.placeholder.com/150x250.png/111/fff?text=Skin+2"><td>2</td><td>John_Wick</td><td>4,500,000,000 ₽</td></tr>
-                    <tr data-name="Trevor_Philips" data-level="65" data-cash="320000000" data-assets="2880000000" data-skin="https://via.placeholder.com/150x250.png/111/fff?text=Skin+3"><td>3</td><td>Trevor_Philips</td><td>3,200,000,000 ₽</td></tr>
-                    <tr data-name="Carl_Johnson" data-level="72" data-cash="80000000" data-assets="2720000000" data-skin="https://via.placeholder.com/150x250.png/111/fff?text=Skin+4"><td>4</td><td>Carl_Johnson</td><td>2,800,000,000 ₽</td></tr>
-                    <tr data-name="Big_Smoke" data-level="55" data-cash="150000000" data-assets="1350000000" data-skin="https://via.placeholder.com/150x250.png/111/fff?text=Skin+5"><td>5</td><td>Big_Smoke</td><td>1,500,000,000 ₽</td></tr>
                 </tbody>
             </table>
             <div class="modal-buttons">
@@ -326,13 +345,8 @@
             <h2>Личный кабинет</h2>
             <input type="text" placeholder="Имя" required>
             <input type="password" placeholder="Пароль" required>
-            <select>
-                <option>Server 01</option>
-                <option>Server 02</option>
-                <option>Server 03</option>
-            </select>
             <div class="modal-buttons">
-                <button type="submit">Продолжить</button>
+                <button type="button">Продолжить</button>
                 <button type="button" class="back-button" onclick="document.getElementById('loginModal').style.display='none'">Назад</button>
             </div>
         </div>
@@ -345,7 +359,7 @@
             <input type="text" placeholder="Ваше имя" required>
             <input type="number" placeholder="Сумма" required>
             <div class="modal-buttons">
-                <button type="submit">Продолжить</button>
+                <button type="button">Продолжить</button>
                 <button type="button" class="back-button" onclick="document.getElementById('donateModal').style.display='none'">Назад</button>
             </div>
         </div>
@@ -353,6 +367,7 @@
     
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            // Анимация при скролле (Сервера и новости)
             const sections = document.querySelectorAll('.content-section');
             const observer = new IntersectionObserver(entries => {
                 entries.forEach(entry => {
@@ -375,65 +390,98 @@
             
             sections.forEach(section => observer.observe(section));
             
+            // Смена фона шапки
             const header = document.querySelector('header');
             window.addEventListener('scroll', () => {
                 header.style.background = (window.scrollY > 50) ? 'rgba(0, 0, 0, 0.9)' : 'rgba(0, 0, 0, 0.5)';
             });
 
-            // --- ЛОГИКА ДЛЯ МОБИЛЬНОГО МЕНЮ ---
+            // Логика мобильного меню
             const menuToggle = document.getElementById('menu-toggle');
             const menuClose = document.getElementById('menu-close');
             const mainNav = document.getElementById('main-nav');
             const navButtons = mainNav.querySelectorAll('button');
 
-            menuToggle.addEventListener('click', () => {
-                mainNav.classList.add('active');
-            });
-            menuClose.addEventListener('click', () => {
-                mainNav.classList.remove('active');
-            });
+            menuToggle.addEventListener('click', () => mainNav.classList.add('active'));
+            menuClose.addEventListener('click', () => mainNav.classList.remove('active'));
+            navButtons.forEach(btn => btn.addEventListener('click', () => mainNav.classList.remove('active')));
 
-             // Закрываем меню при клике на любую из кнопок
-            navButtons.forEach(button => {
-                button.addEventListener('click', () => {
-                    mainNav.classList.remove('active');
+            // Закрытие модалок при клике вне окна
+            const modals = document.querySelectorAll('.modal');
+            window.addEventListener('click', (event) => {
+                modals.forEach(modal => {
+                    if (event.target == modal) modal.style.display = "none";
                 });
             });
 
-            // --- СТАНДАРТНАЯ ЛОГИКА МОДАЛЬНЫХ ОКОН ---
-            const loginModal = document.getElementById('loginModal');
-            const donateModal = document.getElementById('donateModal');
-            const forbesModal = document.getElementById('forbesModal');
-            const playerProfileModal = document.getElementById('playerProfileModal');
-            const applyModal = document.getElementById('applyModal'); // Переменная для заявок
-
-            window.addEventListener('click', (event) => {
-                if (event.target == loginModal) loginModal.style.display = "none";
-                if (event.target == donateModal) donateModal.style.display = "none";
-                if (event.target == forbesModal) forbesModal.style.display = "none";
-                if (event.target == playerProfileModal) playerProfileModal.style.display = "none";
-                if (event.target == applyModal) applyModal.style.display = "none"; // Закрытие при клике мимо
-            });
-
+            // Логика Forbes
             const forbesTableRows = document.querySelectorAll('.forbes-table tbody tr');
+            const playerProfileModal = document.getElementById('playerProfileModal');
             forbesTableRows.forEach(row => {
                 row.addEventListener('click', () => {
-                    const name = row.dataset.name;
-                    const level = row.dataset.level;
-                    const cash = parseInt(row.dataset.cash).toLocaleString('ru-RU');
-                    const assets = parseInt(row.dataset.assets).toLocaleString('ru-RU');
-                    const skin = row.dataset.skin;
-
-                    document.getElementById('playerName').textContent = name;
-                    document.getElementById('playerLevel').textContent = level;
-                    document.getElementById('playerCash').textContent = `${cash} ₽`;
-                    document.getElementById('playerAssets').textContent = `${assets} ₽`;
-                    document.getElementById('playerSkin').src = skin;
-                    
+                    document.getElementById('playerName').textContent = row.dataset.name;
+                    document.getElementById('playerLevel').textContent = row.dataset.level;
+                    document.getElementById('playerCash').textContent = `${parseInt(row.dataset.cash).toLocaleString('ru-RU')} ₽`;
+                    document.getElementById('playerAssets').textContent = `${parseInt(row.dataset.assets).toLocaleString('ru-RU')} ₽`;
+                    document.getElementById('playerSkin').src = row.dataset.skin;
                     playerProfileModal.style.display = 'block';
                 });
             });
+
+            // ==========================================
+            // ЛОГИКА ОТПРАВКИ ФОРМЫ "ЗАЯВКИ" (AJAX)
+            // ==========================================
+            const applyForm = document.getElementById('ajax-apply-form');
+            const formContainer = document.getElementById('apply-form-container');
+            const successMessage = document.getElementById('success-message');
+            const submitBtn = document.getElementById('submit-btn');
+
+            applyForm.addEventListener('submit', function(e) {
+                e.preventDefault(); // Останавливаем стандартную перезагрузку страницы
+                
+                // Меняем текст кнопки и блокируем её
+                submitBtn.textContent = 'Отправка...';
+                submitBtn.disabled = true;
+
+                // Собираем данные из формы
+                const formData = new FormData(applyForm);
+
+                // Отправляем данные через fetch API на FormSubmit
+                fetch("https://formsubmit.co/ajax/Dan4ikporoh@gmail.com", {
+                    method: "POST",
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if(data.success) {
+                        // Если успешно: скрываем форму, показываем галочку
+                        formContainer.style.display = 'none';
+                        successMessage.style.display = 'flex';
+                    } else {
+                        alert("Ошибка отправки. Попробуйте позже.");
+                        submitBtn.textContent = 'Отправить заявку';
+                        submitBtn.disabled = false;
+                    }
+                })
+                .catch(error => {
+                    console.error("Ошибка:", error);
+                    alert("Произошла ошибка при отправке заявки.");
+                    submitBtn.textContent = 'Отправить заявку';
+                    submitBtn.disabled = false;
+                });
+            });
         });
+
+        // Функция открытия модалки заявок (чтобы сбрасывать состояние при повторном открытии)
+        function openApplyModal() {
+            document.getElementById('apply-form-container').style.display = 'block';
+            document.getElementById('success-message').style.display = 'none';
+            document.getElementById('ajax-apply-form').reset();
+            const submitBtn = document.getElementById('submit-btn');
+            submitBtn.textContent = 'Отправить заявку';
+            submitBtn.disabled = false;
+            document.getElementById('applyModal').style.display = 'block';
+        }
     </script>
 </body>
 </html>
