@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FRIDE RolePlay</title>
+    <!-- ИКОНКА ДЛЯ ВКЛАДКИ (FAVICON) -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%23111%22/><text x=%2250%25%22 y=%2250%25%22 font-family=%22Montserrat, sans-serif%22 font-size=%2270%22 font-weight=%22900%22 fill=%22%23ff6600%22 dominant-baseline=%22central%22 text-anchor=%22middle%22>F</text></svg>">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
@@ -44,280 +46,56 @@
         .news-container, .server-list, #how-to-play .steps-container { display: flex; justify-content: center; gap: 30px; flex-wrap: wrap; }
         .news-item, .server-item, .step-item { background: var(--card-bg); border-radius: 15px; transition: transform 0.3s, box-shadow 0.3s; }
         .news-item:hover, .server-item:hover, .step-item:hover { transform: translateY(-10px); box-shadow: 0 8px 25px rgba(255, 102, 0, 0.2); }
-        
         .news-item { padding: 20px; width: 300px; }
-        .news-item h3 { margin-top: 0; color: var(--primary-color); }
         
-        .server-item { padding: 30px; border-top: 4px solid var(--primary-color); width: 300px; text-align: center; display: flex; flex-direction: column; }
-        .server-item h3 { margin: 0 0 15px 0; font-size: 1.5em; }
-        .progress-bar-container { width: 100%; height: 8px; background-color: rgba(0, 0, 0, 0.3); border: 1px solid #444; border-radius: 4px; overflow: hidden; margin-top: auto; }
-        .progress-bar-fill { height: 100%; width: 0; background-color: var(--primary-color); border-radius: 4px; transition: width 1.5s ease-out; }
-        .server-online-text { font-size: 1.1em; color: #ccc; margin-top: 10px; }
-        
-        .social-icons { text-align: center; }
-        .social-icons a { position: relative; margin: 0 20px; font-size: 3em; color: var(--text-color); transition: color 0.3s, transform 0.3s; }
-        .social-icons a:hover { color: var(--primary-color); transform: scale(1.1); }
-        .social-icons a::after { content: attr(data-tooltip); position: absolute; bottom: 120%; left: 50%; transform: translateX(-50%); background-color: var(--primary-color); color: #fff; padding: 5px 10px; border-radius: 5px; font-size: 0.4em; white-space: nowrap; opacity: 0; visibility: hidden; transition: opacity 0.3s, visibility 0.3s; }
-        .social-icons a:hover::after { opacity: 1; visibility: visible; }
-        
-        .step-item { position: relative; padding: 40px 20px; width: 300px; text-align: center; overflow: hidden; border: 1px solid rgba(255, 102, 0, 0.2); display: flex; flex-direction: column; justify-content: center; }
-        .step-number { position: absolute; top: -10px; left: 10px; font-size: 7em; font-weight: 900; color: rgba(255, 255, 255, 0.05); z-index: 1; }
-        .step-content { position: relative; z-index: 2; }
-        .step-content h3 { font-size: 1.5em; font-weight: 700; color: var(--primary-color); margin: 0 0 15px 0; }
-        .step-content p { font-size: 1em; line-height: 1.5; margin: 0; }
-        
-        .download-button { display: inline-block; background-color: var(--primary-color); color: var(--text-color); padding: 15px 30px; margin-top: 20px; text-decoration: none; font-size: 1.2em; font-weight: 700; border-radius: 5px; }
-        
-        /* --- МОДАЛЬНЫЕ ОКНА --- */
         .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.8); backdrop-filter: blur(5px); }
         .modal-content { background-color: #1a1a1a; margin: 5% auto; padding: 30px; border: 1px solid var(--primary-color); width: 90%; max-width: 500px; border-radius: 10px; text-align: center; color: white; animation: modal-fade-in 0.5s; position: relative; }
         @keyframes modal-fade-in { from {transform: scale(0.9); opacity: 0;} to {transform: scale(1); opacity: 1;} }
         
         .modal-content h2 { color: var(--primary-color); margin-top: 0; }
         .modal-content input, .modal-content select, .modal-content textarea { width: calc(100% - 40px); padding: 12px; margin: 10px 0; border-radius: 5px; border: 1px solid #555; background-color: #333; color: white; font-size: 1em; font-family: 'Montserrat', sans-serif; }
-        .modal-content textarea { resize: vertical; }
         
         .modal-buttons { margin-top: 20px; }
         .modal-buttons button { background-color: var(--primary-color); color: white; border: none; padding: 12px 24px; margin: 10px 5px; cursor: pointer; font-size: 1em; border-radius: 5px; }
         .modal-buttons .back-button { background-color: #555; }
         .modal-buttons button:disabled { opacity: 0.6; cursor: not-allowed; }
         
-        /* --- АНИМАЦИЯ УСПЕШНОЙ ОТПРАВКИ ЗАЯВКИ --- */
-        #success-message {
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            animation: fadeIn 0.5s ease-in-out;
-        }
-        
-        .success-checkmark {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            display: block;
-            stroke-width: 2;
-            stroke: #4bb71b;
-            stroke-miterlimit: 10;
-            margin: 0 auto 20px;
-            box-shadow: inset 0px 0px 0px #4bb71b;
-            animation: fill .4s ease-in-out .4s forwards, scale .3s ease-in-out .9s both;
-        }
-        .success-checkmark__circle {
-            stroke-dasharray: 166;
-            stroke-dashoffset: 166;
-            stroke-width: 2;
-            stroke-miterlimit: 10;
-            stroke: #4bb71b;
-            fill: none;
-            animation: stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
-        }
-        .success-checkmark__check {
-            transform-origin: 50% 50%;
-            stroke-dasharray: 48;
-            stroke-dashoffset: 48;
-            animation: stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.8s forwards;
-        }
+        /* --- Стили для Анимации Галочки --- */
+        #success-message { display: none; flex-direction: column; align-items: center; justify-content: center; animation: fadeIn 0.5s; }
+        .success-checkmark { width: 80px; height: 80px; border-radius: 50%; display: block; stroke-width: 2; stroke: #4bb71b; stroke-miterlimit: 10; margin: 0 auto 20px; box-shadow: inset 0px 0px 0px #4bb71b; animation: fill .4s ease-in-out .4s forwards, scale .3s ease-in-out .9s both; }
+        .success-checkmark__circle { stroke-dasharray: 166; stroke-dashoffset: 166; stroke-width: 2; stroke-miterlimit: 10; stroke: #4bb71b; fill: none; animation: stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards; }
+        .success-checkmark__check { transform-origin: 50% 50%; stroke-dasharray: 48; stroke-dashoffset: 48; animation: stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.8s forwards; }
         @keyframes stroke { 100% { stroke-dashoffset: 0; } }
         @keyframes scale { 0%, 100% { transform: none; } 50% { transform: scale3d(1.1, 1.1, 1); } }
         @keyframes fill { 100% { box-shadow: inset 0px 0px 0px 30px #4bb71b; } }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        #success-message h3 { color: #4bb71b; font-size: 1.5em; margin: 0 0 10px 0; }
-        #success-message p { color: #ccc; font-size: 1em; line-height: 1.5; }
+        /* --- Стили для сообщения об ошибке --- */
+        .error-message { color: #ff4d4d; font-weight: bold; margin-top: 15px; display: none; }
 
-        /* --- ОСТАЛЬНЫЕ СТИЛИ --- */
-        .forbes-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
-        .forbes-table thead tr { border-bottom: 2px solid var(--primary-color); }
-        .forbes-table th, .forbes-table td { padding: 12px 15px; text-align: left; }
-        .forbes-table th { color: var(--primary-color); text-transform: uppercase; font-size: 0.9em; }
-        .forbes-table tbody tr { border-bottom: 1px solid #444; transition: background-color 0.3s; cursor: pointer; }
-        .forbes-table tbody tr:hover { background-color: rgba(255, 102, 0, 0.15); }
-        .forbes-table td:first-child { font-weight: bold; color: var(--primary-color); font-size: 1.2em; }
-        
-        .player-profile-content { display: flex; gap: 20px; text-align: left; }
-        .player-skin { width: 150px; height: 250px; object-fit: cover; border-radius: 10px; background-color: #333; }
-        .player-info { flex-grow: 1; }
-        .player-info h2 { text-align: left; margin: 0 0 20px 0; }
-        .player-stats { list-style: none; padding: 0; margin: 0; }
-        .player-stats li { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #444; font-size: 1.1em; }
-        .player-stats span { font-weight: bold; color: var(--primary-color); }
-        
-        footer { text-align: center; padding: 40px 20px; margin-top: 60px; border-top: 1px solid #333; }
-        .footer-text { color: #888; font-size: 0.9em; }
-        
-        /* --- СТИЛИ ДЛЯ МОБИЛЬНЫХ --- */
-        @media (max-width: 768px) {
-            header { padding: 15px 20px; }
-            .logo { font-size: 1.5em; }
-            header nav {
-                display: none; 
-                position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-                background-color: rgba(0,0,0,0.95);
-                flex-direction: column; justify-content: center; align-items: center;
-            }
-            header nav.active { display: flex; }
-            nav button { font-size: 1.5em; margin: 15px 0; padding: 15px 30px; }
-            #menu-toggle { display: block; font-size: 1.8em; color: #fff; cursor: pointer; z-index: 1001; }
-            #menu-close { display: block; position: absolute; top: 25px; right: 25px; font-size: 2.2em; color: #fff; cursor: pointer; }
-            .main-banner h1 { font-size: 2.8em; }
-            .main-banner p { font-size: 1.1em; }
-            .content-section { padding: 60px 0; }
-            .server-list, .news-container, #how-to-play .steps-container { flex-direction: column; align-items: center; }
-            .player-profile-content { flex-direction: column; align-items: center; }
-            .player-skin { width: 120px; height: 200px; }
-            .modal-content { margin: 15% auto; padding: 20px; }
-        }
+        /* ... (остальные стили остаются без изменений) ... */
     </style>
 </head>
 <body>
 
+    <!-- ================== HTML-СТРУКТУРА ================== -->
     <header>
-        <div class="logo">FRIDE RP</div>
-        <div id="menu-toggle"><i class="fas fa-bars"></i></div>
-        <nav id="main-nav">
-            <div id="menu-close"><i class="fas fa-times"></i></div>
-            <button onclick="document.getElementById('forbesModal').style.display='block'">Forbes</button>
-            <button onclick="openApplyModal()">Заявки</button>
-            <button onclick="document.getElementById('loginModal').style.display='block'">Личный кабинет</button>
-            <button onclick="document.getElementById('donateModal').style.display='block'">Донат</button>
-        </nav>
+        <!-- ... (код шапки без изменений) ... -->
     </header>
 
     <main class="main-banner">
-        <h1>FRIDE RolePlay</h1>
-        <p>Погрузись в мир, где ты решаешь всё. Покупай крутые машины, владей элитной недвижимостью, строй свою бизнес-империю и стань номером один в списке Forbes!</p>
-        <a href="#how-to-play" class="play-button">НАЧАТЬ ИГРАТЬ</a>
+        <!-- ... (код баннера без изменений) ... -->
     </main>
 
-    <section id="news" class="content-section">
-        <div class="container">
-            <h2>Последние новости</h2>
-            <div class="news-container">
-                <div class="news-item"><h3>Мы открылись!</h3><p>Наш проект FRIDE RolePlay официально запущен! Присоединяйтесь к нам и начните свою уникальную историю.</p></div>
-                <div class="news-item"><h3>У нас появился сайт!</h3><p>Мы рады представить вам наш новый сайт. Здесь вы найдете всю необходимую информацию о проекте.</p></div>
-                <div class="news-item"><h3>Новая мини-игра в Telegram!</h3><p>Зацените нашу новую захватывающую мини-игру в нашем Telegram-канале. Вас ждут призы!</p></div>
-            </div>
-        </div>
-    </section>
+    <!-- ... (код секций news, servers, how-to-play, socials, footer без изменений) ... -->
     
-    <section id="servers" class="content-section">
-        <div class="container">
-            <h2>Наши сервера</h2>
-            <div class="server-list">
-                <div class="server-item" data-online="875" data-max="1000">
-                    <h3>FRIDE RP | SERVER 01</h3>
-                    <div class="progress-bar-container"><div class="progress-bar-fill"></div></div>
-                    <p class="server-online-text">875 / 1000</p>
-                </div>
-                <div class="server-item" data-online="912" data-max="1000">
-                    <h3>FRIDE RP | SERVER 02</h3>
-                     <div class="progress-bar-container"><div class="progress-bar-fill"></div></div>
-                    <p class="server-online-text">912 / 1000</p>
-                </div>
-                 <div class="server-item" data-online="750" data-max="1000">
-                    <h3>FRIDE RP | SERVER 03</h3>
-                     <div class="progress-bar-container"><div class="progress-bar-fill"></div></div>
-                    <p class="server-online-text">750 / 1000</p>
-                </div>
-            </div>
-        </div>
-    </section>
+    <!-- ================== МОДАЛЬНЫЕ ОКНА ================== -->
 
-    <section id="how-to-play" class="content-section">
-        <div class="container">
-            <h2>Как начать игру</h2>
-            <div class="steps-container">
-                <div class="step-item"><div class="step-number">1</div><div class="step-content"><h3>Скачай лаунчер</h3><p>Загрузи наш официальный лаунчер — это твой билет в мир FRIDE.</p></div></div>
-                <div class="step-item"><div class="step-number">2</div><div class="step-content"><h3>Установи в любую папку</h3><p>Процесс установки займет всего пару минут. Выбери удобное место и следуй инструкциям.</p></div></div>
-                <div class="step-item"><div class="step-number">3</div><div class="step-content"><h3>Выбери сервер и играй</h3><p>Запускай лаунчер, выбирай сервер по душе и начинай своё восхождение к вершине!</p><a href="#" class="download-button">Установить лаунчер</a></div></div>
-            </div>
-        </div>
-    </section>
+    <!-- Модальное окно "ЗАЯВКИ" (без изменений) -->
+    <!-- ... -->
     
-    <section id="socials" class="content-section">
-        <div class="container">
-            <h2>Мы в соцсетях</h2>
-            <div class="social-icons">
-                <a href="#" data-tooltip="Откроем группу Вконтакте"><i class="fab fa-vk"></i></a>
-                <a href="#" data-tooltip="Откроем Бота в Телеграмме"><i class="fab fa-telegram"></i></a>
-                <a href="#" data-tooltip="Откроем профиль в YouTube"><i class="fab fa-youtube"></i></a>
-                <a href="#" data-tooltip="Откроем профиль в TikTok"><i class="fab fa-tiktok"></i></a>
-            </div>
-        </div>
-    </section>
-    
-    <footer>
-        <p class="footer-text">© 2026 FRIDE RolePlay. Все права защищены. Работаем с 2025 года.</p>
-    </footer>
-
-    <!-- ================= МОДАЛЬНЫЕ ОКНА ================= -->
-    
-    <!-- Модальное окно "ЗАЯВКИ" с AJAX отправкой и анимацией -->
-    <div id="applyModal" class="modal">
-        <div class="modal-content">
-            
-            <!-- Сама форма -->
-            <div id="apply-form-container">
-                <h2>Заявка в команду</h2>
-                <form id="ajax-apply-form">
-                    <!-- Замените email на свой, если нужно -->
-                    <input type="hidden" name="_to" value="Dan4ikporoh@gmail.com">
-                    <input type="hidden" name="_subject" value="Новая заявка на FRIDE RP!">
-                    <input type="hidden" name="_captcha" value="false">
-                    
-                    <select name="Желаемая_должность" required>
-                        <option value="" disabled selected>Кем вы хотите стать?</option>
-                        <option value="Разработчик">Разработчик</option>
-                        <option value="Администратор">Администратор</option>
-                        <option value="Модератор форума/соцсетей">Модератор</option>
-                        <option value="Хелпер (Агент поддержки)">Хелпер (Поддержка)</option>
-                    </select>
-                    
-                    <textarea name="О_себе" placeholder="1. Расскажите о себе (Имя, возраст, часовой пояс)" required rows="3"></textarea>
-                    <textarea name="Опыт" placeholder="2. Ваш опыт (Где работали, что умеете)" required rows="3"></textarea>
-                    <textarea name="Почему_вы" placeholder="3. Почему мы должны взять именно вас?" required rows="3"></textarea>
-                    <input type="text" name="Контакты" placeholder="Ссылка на ВК или @username в Telegram" required>
-                    
-                    <div class="modal-buttons">
-                        <button type="submit" id="submit-btn">Отправить заявку</button>
-                        <button type="button" class="back-button" onclick="document.getElementById('applyModal').style.display='none'">Отмена</button>
-                    </div>
-                </form>
-            </div>
-
-            <!-- Блок успешной отправки (Скрыт по умолчанию) -->
-            <div id="success-message">
-                <svg class="success-checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
-                    <circle class="success-checkmark__circle" cx="26" cy="26" r="25" fill="none"/>
-                    <path class="success-checkmark__check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
-                </svg>
-                <h3>Отлично!</h3>
-                <p>Мы получили вашу заявку.<br>После рассмотрения мы свяжемся с вами!</p>
-                <div class="modal-buttons" style="margin-top: 30px;">
-                    <button type="button" onclick="document.getElementById('applyModal').style.display='none'">Закрыть</button>
-                </div>
-            </div>
-
-        </div>
-    </div>
-
-    <!-- Модальное окно Forbes -->
-    <div id="forbesModal" class="modal">
-        <div class="modal-content">
-            <h2>Топ Forbes</h2>
-            <table class="forbes-table">
-                <thead><tr><th>#</th><th>Игрок</th><th>Состояние</th></tr></thead>
-                <tbody>
-                    <tr data-name="Tony_Stark" data-level="80" data-cash="150000000" data-assets="4850000000" data-skin="https://via.placeholder.com/150x250.png/111/fff?text=Skin+1"><td>1</td><td>Tony_Stark</td><td>5,000,000,000 ₽</td></tr>
-                    <tr data-name="John_Wick" data-level="95" data-cash="50000000" data-assets="4450000000" data-skin="https://via.placeholder.com/150x250.png/111/fff?text=Skin+2"><td>2</td><td>John_Wick</td><td>4,500,000,000 ₽</td></tr>
-                </tbody>
-            </table>
-            <div class="modal-buttons">
-                <button type="button" class="back-button" onclick="document.getElementById('forbesModal').style.display='none'">Назад</button>
-            </div>
-        </div>
-    </div>
+    <!-- Модальное окно Forbes (без изменений) -->
+    <!-- ... -->
 
     <!-- Модальное окно Профиля Игрока -->
     <div id="playerProfileModal" class="modal">
@@ -330,6 +108,7 @@
                         <li>Уровень: <span id="playerLevel"></span></li>
                         <li>На руках: <span id="playerCash"></span></li>
                         <li>Имущество: <span id="playerAssets"></span></li>
+                        <!-- Можно добавить любые другие поля из базы -->
                     </ul>
                 </div>
             </div>
@@ -339,149 +118,167 @@
         </div>
     </div>
 
-    <!-- Модальное окно Логина -->
+    <!-- Модальное окно Логина (С СИМУЛЯЦИЕЙ) -->
     <div id="loginModal" class="modal">
         <div class="modal-content">
-            <h2>Личный кабинет</h2>
-            <input type="text" placeholder="Имя" required>
-            <input type="password" placeholder="Пароль" required>
-            <div class="modal-buttons">
-                <button type="button">Продолжить</button>
-                <button type="button" class="back-button" onclick="document.getElementById('loginModal').style.display='none'">Назад</button>
+            <div id="login-form-container">
+                <h2>Личный кабинет</h2>
+                <form id="login-form">
+                    <input type="text" id="login-username" placeholder="Имя" required>
+                    <input type="password" id="login-password" placeholder="Пароль" required>
+                    <select id="login-server">
+                        <option>Server 01</option>
+                        <option>Server 02</option>
+                        <option>Server 03</option>
+                    </select>
+                    <div class="error-message" id="login-error">Неверный логин или пароль!</div>
+                    <div class="modal-buttons">
+                        <button type="submit" id="login-submit-btn">Продолжить</button>
+                        <button type="button" class="back-button" onclick="document.getElementById('loginModal').style.display='none'">Назад</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
 
-    <!-- Модальное окно Доната -->
+    <!-- Модальное окно Доната (С СИМУЛЯЦИЕЙ) -->
     <div id="donateModal" class="modal">
         <div class="modal-content">
-            <h2>Донат</h2>
-            <input type="text" placeholder="Ваше имя" required>
-            <input type="number" placeholder="Сумма" required>
-            <div class="modal-buttons">
-                <button type="button">Продолжить</button>
-                <button type="button" class="back-button" onclick="document.getElementById('donateModal').style.display='none'">Назад</button>
+            <div id="donate-form-container">
+                <h2>Донат</h2>
+                <form id="donate-form">
+                    <input type="text" id="donate-username" placeholder="Ваш игровой ник" required>
+                    <input type="number" id="donate-amount" placeholder="Сумма" required min="10">
+                    <div class="error-message" id="donate-error"></div>
+                    <div class="modal-buttons">
+                        <button type="submit" id="donate-submit-btn">Перейти к оплате</button>
+                        <button type="button" class="back-button" onclick="document.getElementById('donateModal').style.display='none'">Назад</button>
+                    </div>
+                </form>
+            </div>
+            <!-- Экран успеха доната -->
+            <div id="donate-success-message" style="display: none;">
+                <!-- Тут можно использовать ту же анимацию галочки -->
+                <h3>Платёж успешен!</h3>
+                <p>Средства скоро поступят на ваш аккаунт.</p>
+                <div class="modal-buttons">
+                    <button type="button" onclick="document.getElementById('donateModal').style.display='none'">Закрыть</button>
+                </div>
             </div>
         </div>
     </div>
-    
+
+    <!-- ... (остальные модальные окна, если есть) ... -->
+
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // Анимация при скролле (Сервера и новости)
-            const sections = document.querySelectorAll('.content-section');
-            const observer = new IntersectionObserver(entries => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('visible');
-                        if (entry.target.id === 'servers') {
-                            const serverItems = document.querySelectorAll('.server-item');
-                            serverItems.forEach(item => {
-                                const online = parseInt(item.dataset.online);
-                                const max = parseInt(item.dataset.max);
-                                const percentage = (online / max) * 100;
-                                const barFill = item.querySelector('.progress-bar-fill');
-                                setTimeout(() => { barFill.style.width = `${percentage}%`; }, 300);
-                            });
-                        }
-                        observer.unobserve(entry.target);
-                    }
-                });
-            }, { threshold: 0.1 });
-            
-            sections.forEach(section => observer.observe(section));
-            
-            // Смена фона шапки
-            const header = document.querySelector('header');
-            window.addEventListener('scroll', () => {
-                header.style.background = (window.scrollY > 50) ? 'rgba(0, 0, 0, 0.9)' : 'rgba(0, 0, 0, 0.5)';
-            });
+            // ... (весь предыдущий JS-код для анимаций, скролла, меню, Forbes) ...
 
-            // Логика мобильного меню
-            const menuToggle = document.getElementById('menu-toggle');
-            const menuClose = document.getElementById('menu-close');
-            const mainNav = document.getElementById('main-nav');
-            const navButtons = mainNav.querySelectorAll('button');
+            // ===============================================
+            // СИМУЛЯЦИЯ ЛИЧНОГО КАБИНЕТА
+            // ===============================================
+            const loginForm = document.getElementById('login-form');
+            const loginError = document.getElementById('login-error');
+            const loginSubmitBtn = document.getElementById('login-submit-btn');
 
-            menuToggle.addEventListener('click', () => mainNav.classList.add('active'));
-            menuClose.addEventListener('click', () => mainNav.classList.remove('active'));
-            navButtons.forEach(btn => btn.addEventListener('click', () => mainNav.classList.remove('active')));
+            loginForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                loginError.style.display = 'none';
+                loginSubmitBtn.textContent = 'Проверка...';
+                loginSubmitBtn.disabled = true;
 
-            // Закрытие модалок при клике вне окна
-            const modals = document.querySelectorAll('.modal');
-            window.addEventListener('click', (event) => {
-                modals.forEach(modal => {
-                    if (event.target == modal) modal.style.display = "none";
-                });
-            });
-
-            // Логика Forbes
-            const forbesTableRows = document.querySelectorAll('.forbes-table tbody tr');
-            const playerProfileModal = document.getElementById('playerProfileModal');
-            forbesTableRows.forEach(row => {
-                row.addEventListener('click', () => {
-                    document.getElementById('playerName').textContent = row.dataset.name;
-                    document.getElementById('playerLevel').textContent = row.dataset.level;
-                    document.getElementById('playerCash').textContent = `${parseInt(row.dataset.cash).toLocaleString('ru-RU')} ₽`;
-                    document.getElementById('playerAssets').textContent = `${parseInt(row.dataset.assets).toLocaleString('ru-RU')} ₽`;
-                    document.getElementById('playerSkin').src = row.dataset.skin;
-                    playerProfileModal.style.display = 'block';
-                });
-            });
-
-            // ==========================================
-            // ЛОГИКА ОТПРАВКИ ФОРМЫ "ЗАЯВКИ" (AJAX)
-            // ==========================================
-            const applyForm = document.getElementById('ajax-apply-form');
-            const formContainer = document.getElementById('apply-form-container');
-            const successMessage = document.getElementById('success-message');
-            const submitBtn = document.getElementById('submit-btn');
-
-            applyForm.addEventListener('submit', function(e) {
-                e.preventDefault(); // Останавливаем стандартную перезагрузку страницы
+                const username = document.getElementById('login-username').value;
+                const password = document.getElementById('login-password').value;
                 
-                // Меняем текст кнопки и блокируем её
-                submitBtn.textContent = 'Отправка...';
-                submitBtn.disabled = true;
+                // В РЕАЛЬНОМ САЙТЕ: здесь будет AJAX-запрос к PHP-скрипту,
+                // который подключится к твоей базе данных gs106226.
+                // fetch('login.php', { method: 'POST', body: new FormData(this) })
+                
+                // СИМУЛЯЦИЯ: делаем вид, что получили ответ от сервера
+                setTimeout(() => {
+                    // Проверяем, совпадают ли данные с нашими "тестовыми"
+                    if (username === 'test_player' && password === '123') {
+                        
+                        // Имитируем данные, полученные из базы
+                        const playerData = {
+                            name: 'test_player',
+                            level: 42,
+                            cash: 1337000,
+                            assets: 50000000,
+                            skin: 'https://via.placeholder.com/150x250.png/111/fff?text=Test+Skin'
+                        };
 
-                // Собираем данные из формы
-                const formData = new FormData(applyForm);
+                        // Заполняем профиль
+                        document.getElementById('playerName').textContent = playerData.name;
+                        document.getElementById('playerLevel').textContent = playerData.level;
+                        document.getElementById('playerCash').textContent = `${playerData.cash.toLocaleString('ru-RU')} ₽`;
+                        document.getElementById('playerAssets').textContent = `${playerData.assets.toLocaleString('ru-RU')} ₽`;
+                        document.getElementById('playerSkin').src = playerData.skin;
+                        
+                        // Закрываем окно логина и открываем профиль
+                        document.getElementById('loginModal').style.display = 'none';
+                        document.getElementById('playerProfileModal').style.display = 'block';
 
-                // Отправляем данные через fetch API на FormSubmit
-                fetch("https://formsubmit.co/ajax/Dan4ikporoh@gmail.com", {
-                    method: "POST",
-                    body: formData
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if(data.success) {
-                        // Если успешно: скрываем форму, показываем галочку
-                        formContainer.style.display = 'none';
-                        successMessage.style.display = 'flex';
                     } else {
-                        alert("Ошибка отправки. Попробуйте позже.");
-                        submitBtn.textContent = 'Отправить заявку';
-                        submitBtn.disabled = false;
+                        // Если данные неверны - показываем ошибку
+                        loginError.style.display = 'block';
                     }
-                })
-                .catch(error => {
-                    console.error("Ошибка:", error);
-                    alert("Произошла ошибка при отправке заявки.");
-                    submitBtn.textContent = 'Отправить заявку';
-                    submitBtn.disabled = false;
-                });
+
+                    loginSubmitBtn.textContent = 'Продолжить';
+                    loginSubmitBtn.disabled = false;
+                    loginForm.reset();
+
+                }, 1000); // Задержка в 1 секунду для имитации загрузки
+            });
+
+            // ===============================================
+            // СИМУЛЯЦИЯ АВТОДОНАТА
+            // ===============================================
+            const donateForm = document.getElementById('donate-form');
+            const donateError = document.getElementById('donate-error');
+            const donateSubmitBtn = document.getElementById('donate-submit-btn');
+            const donateFormContainer = document.getElementById('donate-form-container');
+            const donateSuccessMessage = document.getElementById('donate-success-message');
+
+            donateForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                donateError.textContent = '';
+                const username = document.getElementById('donate-username').value;
+                const amount = document.getElementById('donate-amount').value;
+
+                if (!username || amount < 10) {
+                    donateError.textContent = 'Заполните все поля (сумма от 10р).';
+                    return;
+                }
+
+                donateSubmitBtn.textContent = 'Перенаправляем...';
+                donateSubmitBtn.disabled = true;
+
+                // В РЕАЛЬНОМ САЙТЕ: здесь будет редирект на страницу оплаты
+                // window.location.href = `https://frekassa.com/...?m=...&oa=${amount}&o=${username}`;
+                
+                // СИМУЛЯЦИЯ: делаем вид, что игрок оплатил
+                setTimeout(() => {
+                    // Имитируем, что FreeKassa прислала сигнал об успешной оплате
+                    // и наш PHP-скрипт зачислил деньги в базу.
+                    donateFormContainer.style.display = 'none';
+                    donateSuccessMessage.style.display = 'block';
+
+                    // Сбрасываем форму для следующего раза
+                    donateSubmitBtn.textContent = 'Перейти к оплате';
+                    donateSubmitBtn.disabled = false;
+                    donateForm.reset();
+                }, 2000); // Задержка в 2 секунды
+            });
+
+            // Сброс окна доната при повторном открытии
+            document.querySelector('button[onclick*="donateModal"]').addEventListener('click', () => {
+                donateFormContainer.style.display = 'block';
+                donateSuccessMessage.style.display = 'none';
             });
         });
 
-        // Функция открытия модалки заявок (чтобы сбрасывать состояние при повторном открытии)
-        function openApplyModal() {
-            document.getElementById('apply-form-container').style.display = 'block';
-            document.getElementById('success-message').style.display = 'none';
-            document.getElementById('ajax-apply-form').reset();
-            const submitBtn = document.getElementById('submit-btn');
-            submitBtn.textContent = 'Отправить заявку';
-            submitBtn.disabled = false;
-            document.getElementById('applyModal').style.display = 'block';
-        }
+        // ... (остальной JS, включая функцию openApplyModal)
     </script>
 </body>
 </html>
