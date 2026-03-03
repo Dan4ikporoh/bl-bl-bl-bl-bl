@@ -31,43 +31,55 @@
         
         /* --- СТИЛИ ДЛЯ БУРГЕР-МЕНЮ (скрыто на десктопе) --- */
         #menu-toggle, #menu-close { display: none; }
-
+        
         .main-banner { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; height: 100vh; background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('generated_image_9eafcaba-d227-4f51-8c50-8f200777cfc3.png'); background-size: cover; background-position: center; color: var(--text-color); padding: 0 20px; }
         .main-banner h1 { font-size: 5em; font-weight: 900; margin: 0; text-shadow: 0 0 20px rgba(0,0,0,0.5); }
         .main-banner p { font-size: 1.5em; margin-bottom: 40px; max-width: 800px; line-height: 1.4; }
         .play-button { background-color: var(--primary-color); color: var(--text-color); padding: 15px 40px; text-decoration: none; font-size: 1.5em; font-weight: 700; border-radius: 50px; }
+        
         .content-section { padding: 100px 0; opacity: 0; transform: translateY(30px); transition: opacity 0.8s ease-out, transform 0.8s ease-out; }
         .content-section.visible { opacity: 1; transform: translateY(0); }
         .content-section h2 { text-align: center; font-size: 2.8em; font-weight: 900; margin-bottom: 60px; color: var(--primary-color); text-transform: uppercase; }
+        
         .news-container, .server-list, #how-to-play .steps-container { display: flex; justify-content: center; gap: 30px; flex-wrap: wrap; }
         .news-item, .server-item, .step-item { background: var(--card-bg); border-radius: 15px; transition: transform 0.3s, box-shadow 0.3s; }
         .news-item:hover, .server-item:hover, .step-item:hover { transform: translateY(-10px); box-shadow: 0 8px 25px rgba(255, 102, 0, 0.2); }
+        
         .news-item { padding: 20px; width: 300px; }
         .news-item h3 { margin-top: 0; color: var(--primary-color); }
+        
         .server-item { padding: 30px; border-top: 4px solid var(--primary-color); width: 300px; text-align: center; display: flex; flex-direction: column; }
         .server-item h3 { margin: 0 0 15px 0; font-size: 1.5em; }
         .progress-bar-container { width: 100%; height: 8px; background-color: rgba(0, 0, 0, 0.3); border: 1px solid #444; border-radius: 4px; overflow: hidden; margin-top: auto; }
         .progress-bar-fill { height: 100%; width: 0; background-color: var(--primary-color); border-radius: 4px; transition: width 1.5s ease-out; }
         .server-online-text { font-size: 1.1em; color: #ccc; margin-top: 10px; }
+        
         .social-icons { text-align: center; }
         .social-icons a { position: relative; margin: 0 20px; font-size: 3em; color: var(--text-color); transition: color 0.3s, transform 0.3s; }
         .social-icons a:hover { color: var(--primary-color); transform: scale(1.1); }
         .social-icons a::after { content: attr(data-tooltip); position: absolute; bottom: 120%; left: 50%; transform: translateX(-50%); background-color: var(--primary-color); color: #fff; padding: 5px 10px; border-radius: 5px; font-size: 0.4em; white-space: nowrap; opacity: 0; visibility: hidden; transition: opacity 0.3s, visibility 0.3s; }
         .social-icons a:hover::after { opacity: 1; visibility: visible; }
+        
         .step-item { position: relative; padding: 40px 20px; width: 300px; text-align: center; overflow: hidden; border: 1px solid rgba(255, 102, 0, 0.2); display: flex; flex-direction: column; justify-content: center; }
         .step-number { position: absolute; top: -10px; left: 10px; font-size: 7em; font-weight: 900; color: rgba(255, 255, 255, 0.05); z-index: 1; }
         .step-content { position: relative; z-index: 2; }
         .step-content h3 { font-size: 1.5em; font-weight: 700; color: var(--primary-color); margin: 0 0 15px 0; }
         .step-content p { font-size: 1em; line-height: 1.5; margin: 0; }
+        
         .download-button { display: inline-block; background-color: var(--primary-color); color: var(--text-color); padding: 15px 30px; margin-top: 20px; text-decoration: none; font-size: 1.2em; font-weight: 700; border-radius: 5px; }
+        
         .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.8); backdrop-filter: blur(5px); }
-        .modal-content { background-color: #1a1a1a; margin: 10% auto; padding: 30px; border: 1px solid var(--primary-color); width: 90%; max-width: 500px; border-radius: 10px; text-align: center; color: white; animation: modal-fade-in 0.5s; }
+        .modal-content { background-color: #1a1a1a; margin: 5% auto; padding: 30px; border: 1px solid var(--primary-color); width: 90%; max-width: 500px; border-radius: 10px; text-align: center; color: white; animation: modal-fade-in 0.5s; }
         @keyframes modal-fade-in { from {transform: scale(0.9); opacity: 0;} to {transform: scale(1); opacity: 1;} }
+        
         .modal-content h2 { color: var(--primary-color); margin-top: 0; }
-        .modal-content input, .modal-content select { width: calc(100% - 40px); padding: 12px; margin: 10px 0; border-radius: 5px; border: 1px solid #555; background-color: #333; color: white; font-size: 1em; }
+        .modal-content input, .modal-content select, .modal-content textarea { width: calc(100% - 40px); padding: 12px; margin: 10px 0; border-radius: 5px; border: 1px solid #555; background-color: #333; color: white; font-size: 1em; font-family: 'Montserrat', sans-serif; }
+        .modal-content textarea { resize: vertical; } /* Позволяет растягивать поле вниз */
+        
         .modal-buttons { margin-top: 20px; }
         .modal-buttons button { background-color: var(--primary-color); color: white; border: none; padding: 12px 24px; margin: 10px 5px; cursor: pointer; font-size: 1em; border-radius: 5px; }
         .modal-buttons .back-button { background-color: #555; }
+        
         .forbes-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
         .forbes-table thead tr { border-bottom: 2px solid var(--primary-color); }
         .forbes-table th, .forbes-table td { padding: 12px 15px; text-align: left; }
@@ -76,6 +88,7 @@
         .forbes-table tbody tr:last-child { border-bottom: none; }
         .forbes-table tbody tr:hover { background-color: rgba(255, 102, 0, 0.15); }
         .forbes-table td:first-child { font-weight: bold; color: var(--primary-color); font-size: 1.2em; }
+        
         .player-profile-content { display: flex; gap: 20px; text-align: left; }
         .player-skin { width: 150px; height: 250px; object-fit: cover; border-radius: 10px; background-color: #333; }
         .player-info { flex-grow: 1; }
@@ -84,17 +97,17 @@
         .player-stats li { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #444; font-size: 1.1em; }
         .player-stats li:last-child { border-bottom: none; }
         .player-stats span { font-weight: bold; color: var(--primary-color); }
+        
         footer { text-align: center; padding: 40px 20px; margin-top: 60px; border-top: 1px solid #333; }
         .footer-text { color: #888; font-size: 0.9em; }
-
+        
         /* --- СТИЛИ ДЛЯ МОБИЛЬНЫХ УСТРОЙСТВ --- */
         @media (max-width: 768px) {
             header { padding: 15px 20px; }
             .logo { font-size: 1.5em; }
-
             /* Скрываем десктопную навигацию и показываем бургер */
             header nav {
-                display: none; /* Начально меню скрыто */
+                display: none; 
                 position: fixed;
                 top: 0;
                 left: 0;
@@ -104,24 +117,22 @@
                 flex-direction: column;
                 justify-content: center;
                 align-items: center;
-                transform: none; /* Сбрасываем transform */
+                transform: none; 
             }
             header nav.active {
-                display: flex; /* Показываем меню по классу active */
+                display: flex; 
             }
             nav button { 
                 font-size: 1.5em;
-                margin: 20px 0;
+                margin: 15px 0;
                 padding: 15px 30px;
             }
-
-            /* Стили для иконки бургера и крестика */
             #menu-toggle {
                 display: block;
                 font-size: 1.8em;
                 color: #fff;
                 cursor: pointer;
-                z-index: 1001; /* Поверх шапки */
+                z-index: 1001;
             }
             #menu-close {
                 display: block;
@@ -132,22 +143,19 @@
                 color: #fff;
                 cursor: pointer;
             }
-
             .main-banner h1 { font-size: 2.8em; }
             .main-banner p { font-size: 1.1em; }
             .content-section { padding: 60px 0; }
             .content-section h2 { font-size: 2em; margin-bottom: 40px; }
-
             .server-list, .news-container, #how-to-play .steps-container {
                 flex-direction: column;
                 align-items: center;
             }
-
             .social-icons a { margin: 0 10px; font-size: 2.5em; }
-            .social-icons a::after { display: none; } /* Скрываем подсказки на мобильных */
-
+            .social-icons a::after { display: none; } 
             .player-profile-content { flex-direction: column; align-items: center; }
             .player-skin { width: 120px; height: 200px; }
+            .modal-content { margin: 15% auto; padding: 20px; }
         }
     </style>
 </head>
@@ -161,7 +169,9 @@
         <nav id="main-nav">
              <!-- Иконка закрытия -->
             <div id="menu-close"><i class="fas fa-times"></i></div>
+            
             <button onclick="document.getElementById('forbesModal').style.display='block'">Forbes</button>
+            <button onclick="document.getElementById('applyModal').style.display='block'">Заявки</button>
             <button onclick="document.getElementById('loginModal').style.display='block'">Личный кабинет</button>
             <button onclick="document.getElementById('donateModal').style.display='block'">Донат</button>
         </nav>
@@ -235,6 +245,42 @@
     </footer>
 
     <!-- Модальные окна -->
+    
+    <!-- МОДАЛЬНОЕ ОКНО "ЗАЯВКИ" -->
+    <div id="applyModal" class="modal">
+        <div class="modal-content">
+            <h2>Заявка в команду</h2>
+            
+            <!-- Форма отправляет данные через сервис FormSubmit напрямую на твою почту -->
+            <form action="https://formsubmit.co/Dan4ikporoh@gmail.com" method="POST">
+                
+                <!-- Скрытые настройки для корректной отправки -->
+                <input type="hidden" name="_subject" value="Новая заявка на FRIDE RP!">
+                <input type="hidden" name="_captcha" value="false">
+                
+                <select name="Желаемая_должность" required>
+                    <option value="" disabled selected>Кем вы хотите стать?</option>
+                    <option value="Разработчик">Разработчик</option>
+                    <option value="Администратор">Администратор</option>
+                    <option value="Модератор форума/соцсетей">Модератор</option>
+                    <option value="Хелпер (Агент поддержки)">Хелпер (Поддержка)</option>
+                </select>
+                
+                <textarea name="О_себе_Основное" placeholder="1. Расскажите о себе (Имя, возраст, ваш часовой пояс)" required rows="3"></textarea>
+                <textarea name="О_себе_Опыт" placeholder="2. Расскажите о своем опыте (Где работали, что умеете)" required rows="3"></textarea>
+                <textarea name="О_себе_Почему_Вы" placeholder="3. Почему мы должны взять именно вас?" required rows="3"></textarea>
+                
+                <input type="text" name="Контакты_для_связи" placeholder="Ссылка на ВК или ваш @username в Telegram" required>
+                
+                <div class="modal-buttons">
+                    <button type="submit">Отправить заявку</button>
+                    <button type="button" class="back-button" onclick="document.getElementById('applyModal').style.display='none'">Отмена</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Модальное окно Forbes -->
     <div id="forbesModal" class="modal">
         <div class="modal-content">
             <h2>Топ Forbes</h2>
@@ -253,6 +299,8 @@
             </div>
         </div>
     </div>
+
+    <!-- Модальное окно Профиля Игрока -->
     <div id="playerProfileModal" class="modal">
         <div class="modal-content">
              <div class="player-profile-content">
@@ -271,8 +319,37 @@
             </div>
         </div>
     </div>
-    <div id="loginModal" class="modal"><div class="modal-content"><h2>Личный кабинет</h2><input type="text" placeholder="Имя" required><input type="password" placeholder="Пароль" required><select><option>Server 01</option><option>Server 02</option><option>Server 03</option></select><div class="modal-buttons"><button type="submit">Продолжить</button><button type="button" class="back-button" onclick="document.getElementById('loginModal').style.display='none'">Назад</button></div></div></div>
-    <div id="donateModal" class="modal"><div class="modal-content"><h2>Донат</h2><input type="text" placeholder="Ваше имя" required><input type="number" placeholder="Сумма" required><div class="modal-buttons"><button type="submit">Продолжить</button><button type="button" class="back-button" onclick="document.getElementById('donateModal').style.display='none'">Назад</button></div></div></div>
+
+    <!-- Модальное окно Логина -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <h2>Личный кабинет</h2>
+            <input type="text" placeholder="Имя" required>
+            <input type="password" placeholder="Пароль" required>
+            <select>
+                <option>Server 01</option>
+                <option>Server 02</option>
+                <option>Server 03</option>
+            </select>
+            <div class="modal-buttons">
+                <button type="submit">Продолжить</button>
+                <button type="button" class="back-button" onclick="document.getElementById('loginModal').style.display='none'">Назад</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно Доната -->
+    <div id="donateModal" class="modal">
+        <div class="modal-content">
+            <h2>Донат</h2>
+            <input type="text" placeholder="Ваше имя" required>
+            <input type="number" placeholder="Сумма" required>
+            <div class="modal-buttons">
+                <button type="submit">Продолжить</button>
+                <button type="button" class="back-button" onclick="document.getElementById('donateModal').style.display='none'">Назад</button>
+            </div>
+        </div>
+    </div>
     
     <script>
         document.addEventListener('DOMContentLoaded', () => {
@@ -295,8 +372,9 @@
                     }
                 });
             }, { threshold: 0.1 });
+            
             sections.forEach(section => observer.observe(section));
-
+            
             const header = document.querySelector('header');
             window.addEventListener('scroll', () => {
                 header.style.background = (window.scrollY > 50) ? 'rgba(0, 0, 0, 0.9)' : 'rgba(0, 0, 0, 0.5)';
@@ -314,6 +392,7 @@
             menuClose.addEventListener('click', () => {
                 mainNav.classList.remove('active');
             });
+
              // Закрываем меню при клике на любую из кнопок
             navButtons.forEach(button => {
                 button.addEventListener('click', () => {
@@ -321,18 +400,19 @@
                 });
             });
 
-
             // --- СТАНДАРТНАЯ ЛОГИКА МОДАЛЬНЫХ ОКОН ---
             const loginModal = document.getElementById('loginModal');
             const donateModal = document.getElementById('donateModal');
             const forbesModal = document.getElementById('forbesModal');
             const playerProfileModal = document.getElementById('playerProfileModal');
+            const applyModal = document.getElementById('applyModal'); // Переменная для заявок
 
             window.addEventListener('click', (event) => {
                 if (event.target == loginModal) loginModal.style.display = "none";
                 if (event.target == donateModal) donateModal.style.display = "none";
                 if (event.target == forbesModal) forbesModal.style.display = "none";
                 if (event.target == playerProfileModal) playerProfileModal.style.display = "none";
+                if (event.target == applyModal) applyModal.style.display = "none"; // Закрытие при клике мимо
             });
 
             const forbesTableRows = document.querySelectorAll('.forbes-table tbody tr');
@@ -349,7 +429,7 @@
                     document.getElementById('playerCash').textContent = `${cash} ₽`;
                     document.getElementById('playerAssets').textContent = `${assets} ₽`;
                     document.getElementById('playerSkin').src = skin;
-
+                    
                     playerProfileModal.style.display = 'block';
                 });
             });
